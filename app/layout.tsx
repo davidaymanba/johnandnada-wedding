@@ -23,7 +23,7 @@ export const viewport: Viewport = {
 };
 
 // Runs before first paint: decide whether the door intro plays, so nothing flashes.
-const gate = `try{var d=document.documentElement;d.classList.add('js');var t=localStorage.getItem('nj-theme');d.dataset.theme=t==='light'?'light':'dark';if(t==='light'){var m=document.querySelector('meta[name=theme-color]');m&&m.setAttribute('content','#F0EEE9')}var h=location.hash.length>1,q=/[?&]skip/.test(location.search),s=sessionStorage.getItem('nj-door')==='1';if(h||q||s){d.dataset.intro='skip'}else{d.classList.add('is-locked');history.scrollRestoration='manual'}}catch(e){}`;
+const gate = `try{var d=document.documentElement;d.classList.add('js');var t=localStorage.getItem('nj-theme');d.dataset.theme=t==='light'?'light':'dark';if(t==='light'){var m=document.querySelector('meta[name=theme-color]');m&&m.setAttribute('content','#F0EEE9')}var h=location.hash.length>1||location.pathname!=='/',q=/[?&]skip/.test(location.search),s=sessionStorage.getItem('nj-door')==='1';if(h||q||s){d.dataset.intro='skip'}else{d.classList.add('is-locked');history.scrollRestoration='manual'}}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

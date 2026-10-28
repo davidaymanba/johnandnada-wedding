@@ -1,96 +1,32 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
-import { Flip, gsap, MQ, useGSAP } from "@/lib/gsap";
+import { useRef, useState, type FormEvent } from "react";
+import { gsap, MQ, useGSAP } from "@/lib/gsap";
 import { site } from "@/content/site";
 
-type Entry = { id: string; name: string; message: string; relation: "bride" | "groom" | "family" | null; created_at: string; pending?: boolean; key?: string };
+type Relation = "groom" | "bride" | "family" | null;
 
 const gb = site.guestbook;
-const relLabel = (r: Entry["relation"]) => gb.relations.find((x) => x.value === r)?.label ?? null;
 
-const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-function ago(iso: string) {
-  const s = (new Date(iso).getTime() - Date.now()) / 1000;
-  const steps: [Intl.RelativeTimeFormatUnit, number][] = [
-    ["year", 31536000],
-    ["month", 2592000],
-    ["week", 604800],
-    ["day", 86400],
-    ["hour", 3600],
-    ["minute", 60],
-  ];
-  for (const [unit, secs] of steps) if (Math.abs(s) >= secs) return rtf.format(Math.round(s / secs), unit);
-  return "just now";
-}
-
+/**
+ * Guests leave a blessing; it goes privately to the couple (nothing is shown publicly).
+ * The couple reads them at /blessings?key=… (see README).
+ */
 export function Guestbook() {
   const root = useRef<HTMLElement>(null);
-  const form = useRef<HTMLFormElement>(null);
-  const list = useRef<HTMLOListElement>(null);
-  const flipState = useRef<Flip.FlipState | null>(null);
-  const flyFrom = useRef<DOMRect | null>(null);
-  const shown = useRef(new Set<string>());
-
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [next, setNext] = useState<string | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
-  const [relation, setRelation] = useState<Entry["relation"]>(null);
-  const [, tick] = useState(0);
-
-  const load = useCallback(async (before?: string) => {
-    try {
-      const res = await fetch(`/api/guestbook${before ? `?before=${encodeURIComponent(before)}` : ""}`);
-      if (!res.ok) throw new Error();
-      const data = (await res.json()) as { entries: Entry[]; next: string | null };
-      setEntries((prev) => {
-        const seen = new Set(prev.map((e) => e.id));
-        return before ? [...prev, ...data.entries.filter((e) => !seen.has(e.id))] : data.entries;
-      });
-      setNext(data.next);
-      setStatus("ready");
-    } catch {
-      setStatus((s) => (s === "loading" ? "error" : s));
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-    const id = setInterval(() => tick((n) => n + 1), 60_000); // keep "5 minutes ago" fresh
-    return () => clearInterval(id);
-  }, [load]);
-
-  // New card: existing cards Flip into their new places, the new one flies in from the form.
-  useLayoutEffect(() => {
-    const state = flipState.current;
-    if (!state || !list.current) return;
-    flipState.current = null;
-    const fresh = list.current.querySelector<HTMLElement>("[data-fresh]");
-    const reduce = window.matchMedia(MQ.reduce).matches;
-    if (reduce) return;
-    Flip.from(state, { duration: 0.9, ease: "reveal", targets: list.current.querySelectorAll(".blessing:not([data-fresh])") });
-    if (fresh && flyFrom.current) {
-      const to = fresh.getBoundingClientRect();
-      const from = flyFrom.current;
-      gsap.fromTo(
-        fresh,
-        { x: from.left - to.left, y: from.top - to.top, scale: Math.min(1.1, from.width / to.width), autoAlpha: 0.3, transformOrigin: "0 0" },
-        { x: 0, y: 0, scale: 1, autoAlpha: 1, duration: 1.2, ease: "reveal", clearProps: "transform" },
-      );
-    }
-  }, [entries]);
+  const [relation, setRelation] = useState<Relation>(null);
 
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
-        gsap.from(q(".guestbook__head > *, .guestbook__form .field, .guestbook__form .chips, .guestbook__form .guestbook__submit"), {
+        gsap.from(q(".guestbook__head > *, .guestbook__form .field, .guestbook__form .chips, .guestbook__actions"), {
           autoAlpha: 0,
           y: 18,
           stagger: 0.08,
@@ -103,60 +39,46 @@ export function Guestbook() {
     { scope: root },
   );
 
-  // Stagger in whatever arrives from the server.
+  // The thank-you note rises in where the form was.
   useGSAP(
     () => {
-      if (status !== "ready" || window.matchMedia(MQ.reduce).matches) return;
-      const cards = Array.from(list.current?.querySelectorAll<HTMLElement>(".blessing") ?? []).filter((c) => !shown.current.has(c.dataset.flipId!));
-      if (!cards.length) return;
-      cards.forEach((c) => shown.current.add(c.dataset.flipId!));
-      gsap.from(cards, {
-        autoAlpha: 0,
-        y: 24,
-        stagger: 0.07,
-        duration: 1,
-        ease: "drift",
-        scrollTrigger: { trigger: list.current, start: "top 85%", once: true },
-      });
+      if (!sent || window.matchMedia(MQ.reduce).matches) return;
+      const q = gsap.utils.selector(root);
+      gsap
+        .timeline()
+        .from(q(".guestbook__thanks .ornament path"), { drawSVG: "50% 50%", duration: 1.4, ease: "drift" })
+        .from(q(".guestbook__thanks > :not(.ornament)"), { autoAlpha: 0, y: 14, stagger: 0.12, duration: 1.1 }, 0.2);
     },
-    { dependencies: [entries.length, status], scope: root },
+    { dependencies: [sent], scope: root },
   );
 
-  const submit = async (e: FormEvent) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (sending) return;
     setError(null);
-    const fd = new FormData(e.currentTarget as HTMLFormElement);
-    const body = { name: name.trim(), message: message.trim(), relation, website: String(fd.get("website") ?? "") };
+    const website = String(new FormData(e.currentTarget).get("website") ?? "");
+    const body = { name: name.trim(), message: message.trim(), relation, website };
     if (!body.name) return setError("Please add your name.");
     if (body.message.length < 2) return setError("Please write a message.");
 
     setSending(true);
-    const tempId = `temp-${Date.now()}`;
-    const optimistic: Entry = { id: tempId, name: body.name, message: body.message, relation, created_at: new Date().toISOString(), pending: true };
-
-    shown.current.add(tempId);
-    flyFrom.current = form.current?.querySelector("textarea")?.getBoundingClientRect() ?? null;
-    if (list.current) flipState.current = Flip.getState(list.current.querySelectorAll(".blessing"));
-    setEntries((prev) => [optimistic, ...prev]);
-    setStatus("ready");
-
     try {
       const res = await fetch("/api/guestbook", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Couldn’t save your blessing.");
-      setEntries((prev) => prev.map((x) => (x.id === tempId ? { ...(data.entry ?? optimistic), pending: false, key: tempId } : x)));
-      setName("");
-      setMessage("");
-      setRelation(null);
+      if (!res.ok) throw new Error(data.error ?? "Couldn’t send your blessing.");
       setSent(true);
-      setTimeout(() => setSent(false), 4000);
     } catch (err) {
-      setEntries((prev) => prev.filter((x) => x.id !== tempId));
       setError((err as Error).message);
     } finally {
       setSending(false);
     }
+  };
+
+  const again = () => {
+    setName("");
+    setMessage("");
+    setRelation(null);
+    setSent(false);
   };
 
   return (
@@ -169,8 +91,24 @@ export function Guestbook() {
         <p className="guestbook__intro">{gb.intro}</p>
       </header>
 
-      <div className="guestbook__grid">
-        <form ref={form} className="guestbook__form" onSubmit={submit} noValidate>
+      {sent ? (
+        <div className="guestbook__thanks" role="status">
+          <svg className="ornament" viewBox="0 0 240 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M8 12H98" strokeWidth=".8" />
+            <path d="M232 12H142" strokeWidth=".8" />
+            <path d="M120 2L128 12L120 22L112 12Z" strokeWidth=".9" />
+            <path d="M120 7V17M115 12H125" strokeWidth=".8" />
+          </svg>
+          <p className="guestbook__thanks-title">Thank you{name ? `, ${name.split(" ")[0]}` : ""}.</p>
+          <p className="guestbook__thanks-text">
+            Your blessing is on its way to {site.names.groom} &amp; {site.names.bride}. They will keep every word.
+          </p>
+          <button type="button" className="btn" onClick={again}>
+            Write another
+          </button>
+        </div>
+      ) : (
+        <form className="guestbook__form" onSubmit={submit} noValidate>
           <label className="field">
             <span className="field__label">Your name</span>
             <input name="name" autoComplete="name" maxLength={40} required value={name} onChange={(e) => setName(e.target.value)} />
@@ -186,7 +124,7 @@ export function Guestbook() {
                   name="relation"
                   value={r.value}
                   checked={relation === r.value}
-                  onChange={() => setRelation(r.value as Entry["relation"])}
+                  onChange={() => setRelation(r.value as Relation)}
                   onClick={() => relation === r.value && setRelation(null)}
                 />
                 <span>{r.label}</span>
@@ -213,42 +151,15 @@ export function Guestbook() {
             <button type="submit" className="btn btn--solid guestbook__submit" disabled={sending}>
               {sending ? "Sending…" : "Send your blessing"}
             </button>
+            <p className="guestbook__private">
+              Only {site.names.groom} &amp; {site.names.bride} will read it.
+            </p>
             <p className="guestbook__status" role="status" aria-live="polite">
-              {error ? <span className="is-error">{error}</span> : sent ? "Thank you — it means the world to us." : ""}
+              {error && <span className="is-error">{error}</span>}
             </p>
           </div>
         </form>
-
-        <div className="guestbook__wall">
-          {status === "loading" && <p className="guestbook__note">Gathering blessings…</p>}
-          {status === "error" && entries.length === 0 && (
-            <p className="guestbook__note">
-              The blessings couldn’t load right now.{" "}
-              <button type="button" className="link" onClick={() => void load()}>
-                Try again
-              </button>
-            </p>
-          )}
-          {status === "ready" && entries.length === 0 && <p className="guestbook__note guestbook__empty">{gb.empty}</p>}
-          <ol ref={list} className="guestbook__list" aria-label="Blessings from our guests">
-            {entries.map((e) => (
-              <li key={e.key ?? e.id} className="blessing" data-flip-id={e.key ?? e.id} data-fresh={e.pending ? "" : undefined} aria-busy={e.pending || undefined}>
-                <p className="blessing__msg">{e.message}</p>
-                <p className="blessing__meta">
-                  <span className="blessing__name">{e.name}</span>
-                  {relLabel(e.relation) && <span className="blessing__rel">{relLabel(e.relation)}</span>}
-                  <time dateTime={e.created_at}>{e.pending ? "sending…" : ago(e.created_at)}</time>
-                </p>
-              </li>
-            ))}
-          </ol>
-          {next && (
-            <button type="button" className="btn guestbook__more" onClick={() => void load(next)}>
-              Load more
-            </button>
-          )}
-        </div>
-      </div>
+      )}
     </section>
   );
 }

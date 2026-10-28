@@ -38,7 +38,9 @@ The whole page is one theme: **navy (default)** or **light**. Guests switch with
 ## Guestbook (Supabase)
 
 1. Create a Supabase project → SQL editor → run `supabase/migration.sql`.
-2. Copy `.env.example` to `.env.local` and fill in `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`.
+2. Copy `.env.example` to `.env.local` and fill in `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`.
+
+**Blessings are private.** Guests only see the form and a thank-you; nothing they write is shown on the site. John & Nada read every message at **`/blessings?key=YOUR_GUESTBOOK_ADMIN_KEY`** (that page and the read API return 404 without the key), or in the Supabase table editor.
 3. Inserts go through `app/api/guestbook/route.ts`: Zod validation (name ≤ 40, message ≤ 500), HTML stripped, honeypot, rate limit 3 per 10 minutes per hashed IP. The service key never reaches the browser; RLS allows public reads of approved rows only.
 
 **Hide a message:** `update public.guestbook set approved = false where id = '…';`
@@ -48,7 +50,7 @@ Without the Supabase variables the guestbook falls back to an in-memory store. T
 ## Deploy to Vercel
 
 1. Push this folder to GitHub (or run `npx vercel` inside it).
-2. In Vercel → Project → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, and `NEXT_PUBLIC_SITE_URL` (the final URL — used for the WhatsApp preview, share link and calendar file).
+2. In Vercel → Project → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`, and `NEXT_PUBLIC_SITE_URL` (the final URL — used for the WhatsApp preview, share link and calendar file).
 3. Deploy. The framework preset is detected automatically.
 
 ## QA scripts

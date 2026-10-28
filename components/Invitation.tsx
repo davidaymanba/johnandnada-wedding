@@ -23,13 +23,8 @@ export function Invitation() {
           .from(q(".arch__img"), { scale: 1.35, duration: 2.2, stagger: 0.25, ease: "reveal" }, 0.15)
           .from(q(".invite__role"), { autoAlpha: 0, y: 8, stagger: 0.2, duration: 1 }, 1.1);
 
-        // Parallax inside the frames: the image drifts slower than its arch.
+        // The two portraits float at slightly different speeds (the whole frame moves; the photo is never cropped).
         q(".invite__portrait").forEach((fig, i) => {
-          gsap.fromTo(
-            fig.querySelector(".arch__reveal"),
-            { yPercent: -6 },
-            { yPercent: 6, ease: "none", scrollTrigger: { trigger: fig, start: "top bottom", end: "bottom top", scrub: true } },
-          );
           gsap.fromTo(
             fig,
             { y: i ? 60 : 20 },

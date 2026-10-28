@@ -5,7 +5,7 @@ import type { Photo } from "@/content/site";
  * A photo that sits behind text. Phones: full width, uncropped (faces always whole), fading into the
  * page under the words. Desktop: a tall side panel that melts into the page.
  */
-export function HeroPhoto({ photo, side = "right" }: { photo: Photo; side?: "left" | "right" }) {
+export function HeroPhoto({ photo, side = "right" }: { photo: Photo; side?: "left" | "right" | "center" }) {
   return (
     <div className={`hero-photo hero-photo--${side}`}>
       <Image

@@ -43,13 +43,7 @@ export function VerseSection() {
           tl.play();
         });
 
-        // Leave gently: the verse drifts up and dims as the invitation arrives.
-        gsap.to(q(".verse__inner"), {
-          yPercent: -18,
-          autoAlpha: 0.15,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-        });
+        // The words and the photo stay put while scrolling — nothing fades or slides away.
         gsap.to(q(".verse__rays"), {
           yPercent: 20,
           ease: "none",

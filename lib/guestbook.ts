@@ -1,5 +1,5 @@
 import "server-only";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
 
 export type Entry = {
   id: string;
@@ -17,6 +17,15 @@ export const usingSupabase = Boolean(URL_ && KEY);
 
 const PAGE = 12;
 const FIELDS = "id,name,message,relation,created_at";
+
+/** True only for the couple's private key (constant-time compare). */
+export function isAdminKey(key: string | null | undefined) {
+  const secret = process.env.GUESTBOOK_ADMIN_KEY;
+  if (!secret || !key) return false;
+  const a = Buffer.from(key);
+  const b = Buffer.from(secret);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
 
 export function hashIp(ip: string) {
   return createHash("sha256")

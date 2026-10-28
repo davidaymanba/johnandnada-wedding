@@ -4,7 +4,6 @@ import { Frame } from "./Frame";
 import { useRef } from "react";
 import { gsap, MQ, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { site, verseAt, type Photo } from "@/content/site";
-import { ArchPhoto } from "./ArchPhoto";
 import { Scripture } from "./Scripture";
 
 const steps = site.story.steps;
@@ -143,11 +142,6 @@ export function Story() {
               { scale: 1.3, duration: 2.2 },
               0.1,
             );
-            gsap.fromTo(
-              reveal,
-              { yPercent: -5 },
-              { yPercent: 5, ease: "none", scrollTrigger: { trigger: m, start: "top bottom", end: "bottom top", scrub: true } },
-            );
           }
         });
 
@@ -169,16 +163,8 @@ export function Story() {
               invalidateOnRefresh: true,
             },
           });
+          // No parallax inside photo frames: every photo always shows whole.
           q(".chapter__item").forEach((item, i) => {
-            gsap.fromTo(
-              item.querySelector(".frame__reveal"),
-              { xPercent: -6 },
-              {
-                xPercent: 6,
-                ease: "none",
-                scrollTrigger: { trigger: item, containerAnimation: travel, start: "left right", end: "right left", scrub: true },
-              },
-            );
             gsap.from(item.querySelector(".frame"), {
               clipPath: "inset(0% 0% 0% 100%)",
               duration: 1.4,
@@ -197,7 +183,6 @@ export function Story() {
             const reveal = item.querySelector(".frame__reveal");
             const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 86%", once: true } });
             tl.from(reveal, { clipPath: "inset(100% 0% 0% 0%)", duration: 1.5, ease: "door" }).from(item.querySelector(".frame__reveal img"), { scale: 1.25, duration: 2 }, 0);
-            gsap.fromTo(reveal, { yPercent: -4 }, { yPercent: 4, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } });
           });
         }
         if (!desktop) {
@@ -209,9 +194,8 @@ export function Story() {
         // Finale: the wedding-day photo opens like the door did.
         const fin = gsap.timeline({ scrollTrigger: { trigger: q(".finale")[0], start: "top 65%", once: true } });
         fin
-          .from(q(".finale .arch__outline path"), { drawSVG: "50% 50%", duration: 2, ease: "drift" })
-          .from(q(".finale .arch__reveal"), { clipPath: "inset(0% 50% 0% 50%)", duration: 1.8, ease: "door" }, 0.2)
-          .from(q(".finale .arch__img"), { scale: 1.3, duration: 2.4 }, 0.2)
+          .from(q(".finale .frame__reveal"), { clipPath: "inset(0% 50% 0% 50%)", duration: 1.8, ease: "door" })
+          .from(q(".finale .frame__reveal img"), { scale: 1.2, duration: 2.4 }, 0)
           .from(q(".finale__date .mask > span"), { yPercent: 105, stagger: 0.08, duration: 1.4 }, 0.6)
           .from(q(".finale__text > *"), { autoAlpha: 0, y: 16, stagger: 0.14, duration: 1.3, ease: "drift" }, 0.9);
 
@@ -282,7 +266,10 @@ export function Story() {
       </div>
 
       <div className="finale">
-        <ArchPhoto photo={theDayPhoto} sizes="(min-width: 900px) 34vw, 78vw" className="finale__photo" />
+        {/* A plain 3:4 frame (not the arch) so the whole photo shows — John's head sits at the very top. */}
+        <div className="finale__photo">
+          <Frame photo={theDayPhoto} sizes="(min-width: 900px) 440px, 100vw" />
+        </div>
         <div className="finale__text">
           <p className="milestone__num">07</p>
           <p className="finale__date" aria-label={theDay.date ?? undefined}>
