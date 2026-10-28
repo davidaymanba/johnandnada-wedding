@@ -1,5 +1,5 @@
 // Playwright walkthrough: intro → knock → every section → guestbook post. Screenshots → docs/qa/
-// Usage: node scripts/qa.mjs [baseUrl] [--only=mobile|desktop] [--intro] [--sections]
+// Usage: node scripts/qa.mjs [baseUrl] [--only=mobile|desktop] [--intro] [--sections] [--theme=light]
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,6 +10,7 @@ const base = process.argv.find((a) => a.startsWith("http")) ?? "http://localhost
 const only = process.argv.find((a) => a.startsWith("--only="))?.split("=")[1];
 const doIntro = process.argv.includes("--intro") || !process.argv.includes("--sections");
 const doSections = process.argv.includes("--sections") || !process.argv.includes("--intro");
+const theme = process.argv.find((a) => a.startsWith("--theme="))?.split("=")[1] ?? "dark";
 const out = path.join(root, "docs/qa");
 fs.mkdirSync(out, { recursive: true });
 
@@ -27,29 +28,31 @@ for (const vp of viewports) {
 
   if (doIntro) {
     const ctx = await browser.newContext(opts);
+    await ctx.addInitScript((t) => localStorage.setItem("nj-theme", t), theme);
     const page = await ctx.newPage();
     page.on("console", (m) => m.type() === "error" && errors.push(`[${name}] ${m.text()}`));
     page.on("pageerror", (e) => errors.push(`[${name}] ${e.message}`));
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await wait(1200);
-    await page.screenshot({ path: `${out}/${name}-00-preloader.png` });
+    await page.screenshot({ path: `${out}/${theme}-${name}-00-preloader.png` });
     await wait(3200);
-    await page.screenshot({ path: `${out}/${name}-01-video.png` });
+    await page.screenshot({ path: `${out}/${theme}-${name}-01-video.png` });
     await page.waitForSelector('.intro[data-phase="door"]', { timeout: 30000 });
     await wait(3600);
-    await page.screenshot({ path: `${out}/${name}-02-door.png` });
+    await page.screenshot({ path: `${out}/${theme}-${name}-02-door.png` });
     await page.click(".door__btn", { force: true });
     for (const [i, t] of [600, 1300, 2000, 2700, 3400].entries()) {
       await wait(i === 0 ? t : t - [600, 1300, 2000, 2700, 3400][i - 1]);
-      await page.screenshot({ path: `${out}/${name}-03-open-${i}.png` });
+      await page.screenshot({ path: `${out}/${theme}-${name}-03-open-${i}.png` });
     }
     await wait(2600);
-    await page.screenshot({ path: `${out}/${name}-04-verse.png` });
+    await page.screenshot({ path: `${out}/${theme}-${name}-04-verse.png` });
     await ctx.close();
   }
 
   if (doSections) {
     const ctx = await browser.newContext(opts);
+    await ctx.addInitScript((t) => localStorage.setItem("nj-theme", t), theme);
     const page = await ctx.newPage();
     page.on("console", (m) => m.type() === "error" && errors.push(`[${name}] ${m.text()}`));
     page.on("pageerror", (e) => errors.push(`[${name}] ${e.message}`));
@@ -62,7 +65,7 @@ for (const vp of viewports) {
     for (let y = 0; y < total + step; y += step) {
       await page.evaluate((top) => window.scrollTo(0, top), y);
       await wait(1500);
-      await page.screenshot({ path: `${out}/${name}-s${String(i++).padStart(2, "0")}.png` });
+      await page.screenshot({ path: `${out}/${theme}-${name}-s${String(i++).padStart(2, "0")}.png` });
       const h = await page.evaluate(() => document.documentElement.scrollHeight);
       if (y > h) break;
     }
@@ -74,13 +77,13 @@ for (const vp of viewports) {
     await page.click(".chip:nth-of-type(1) span");
     await page.click(".guestbook__submit");
     await wait(2000);
-    await page.locator("#guestbook").screenshot({ path: `${out}/${name}-guestbook-posted.png` });
+    await page.locator("#guestbook").screenshot({ path: `${out}/${theme}-${name}-guestbook-posted.png` });
     // Lightbox
     await page.evaluate(() => document.querySelector("#memories")?.scrollIntoView());
     await wait(2200);
     await page.click(".tile--1 .tile__btn");
     await wait(1200);
-    await page.screenshot({ path: `${out}/${name}-lightbox.png` });
+    await page.screenshot({ path: `${out}/${theme}-${name}-lightbox.png` });
     await page.keyboard.press("Escape");
     // Horizontal overflow check
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);

@@ -1,9 +1,9 @@
-import { site } from "@/content/site";
+import { fullNames, site } from "@/content/site";
 
 const stamp = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 
 export const calendarText = {
-  title: `${site.names.bride} & ${site.names.groom} — Wedding`,
+  title: `${fullNames.bride} & ${fullNames.groom} — Wedding`,
   details: `With hearts full of gratitude to God, we joyfully invite you to celebrate our wedding.\n${site.url}`,
 };
 
@@ -25,7 +25,7 @@ export function icsFile() {
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Nada & John//Wedding//EN",
+    "PRODID:-//Nada Nassef & John Michel//Wedding//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
@@ -40,7 +40,7 @@ export function icsFile() {
     "BEGIN:VALARM",
     "TRIGGER:-P1D",
     "ACTION:DISPLAY",
-    "DESCRIPTION:Nada & John's wedding is tomorrow",
+    `DESCRIPTION:${esc(`${fullNames.bride} & ${fullNames.groom}’s wedding is tomorrow`)}`,
     "END:VALARM",
     "END:VEVENT",
     "END:VCALENDAR",

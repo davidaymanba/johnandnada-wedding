@@ -68,7 +68,7 @@ export function Details() {
   };
 
   return (
-    <section ref={root} id="details" className="section details" data-tone="paper" aria-labelledby="details-title">
+    <section ref={root} id="details" className="section details" aria-labelledby="details-title">
       <div className="details__card">
         <svg className="details__frame" viewBox="0 0 1 1" preserveAspectRatio="none" aria-hidden="true">
           <path d={ARCH_D} vectorEffect="non-scaling-stroke" />

@@ -22,7 +22,6 @@ export function VerseSection() {
         tl.from(q(".verse__rays span"), { autoAlpha: 0, xPercent: -14, duration: 3, stagger: 0.3, ease: "drift" }, 0)
           .from(q(".verse .ornament path"), { drawSVG: "50% 50%", duration: 1.8, stagger: 0.1, ease: "drift" }, 0.2)
           .from(q(".verse__ref"), { autoAlpha: 0, letterSpacing: "0.7em", duration: 1.8, ease: "drift" }, 2.3)
-          .from(q(".verse__ar"), { autoAlpha: 0, y: 14, duration: 1.6, ease: "drift" }, 2.7)
           .from(q(".scroll-cue"), { autoAlpha: 0, y: -10, duration: 1.2 }, 3.2);
 
         SplitText.create(q(".verse__text")[0], {
@@ -63,7 +62,7 @@ export function VerseSection() {
   );
 
   return (
-    <section ref={root} id="verse" className="section verse" data-tone="night" aria-label="Opening verse">
+    <section ref={root} id="verse" className="section verse" aria-label="Opening verse">
       <div className="verse__rays" aria-hidden="true">
         <span />
         <span />
@@ -71,12 +70,9 @@ export function VerseSection() {
       </div>
       <figure className="verse__inner">
         <Ornament />
-        <blockquote className="verse__text">“{verse.en}”</blockquote>
+        <blockquote className="verse__text">“{verse.text}”</blockquote>
         <figcaption>
-          <cite className="verse__ref">{verse.refEn}</cite>
-          <p className="verse__ar" lang="ar" dir="rtl">
-            «{verse.ar}» — {verse.refAr}
-          </p>
+          <cite className="verse__ref">{verse.ref}</cite>
         </figcaption>
       </figure>
       <a className="scroll-cue" href="#invitation" aria-label="Scroll to the invitation">

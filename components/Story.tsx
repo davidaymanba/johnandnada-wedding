@@ -233,7 +233,7 @@ export function Story() {
 
   return (
     <section ref={root} id="story" className="section story" aria-labelledby="story-title">
-      <div className="story__paper" data-tone="paper">
+      <div className="story__paper">
         <header className="story__head">
           <p className="eyebrow">{site.story.eyebrow}</p>
           <h2 id="story-title" className="story__title">
@@ -260,7 +260,7 @@ export function Story() {
         <Scripture verse={verseAt("after-engagement")} className="interlude--wide" />
       </div>
 
-      <div className="chapter" data-tone="paper">
+      <div className="chapter">
         <div className="chapter__rail">
           <div className="chapter__panel">
             <p className="milestone__num">05</p>
@@ -285,7 +285,7 @@ export function Story() {
         </div>
       </div>
 
-      <div className="finale" data-tone="night">
+      <div className="finale">
         <ArchPhoto photo={theDayPhoto} sizes="(min-width: 900px) 34vw, 78vw" className="finale__photo" />
         <div className="finale__text">
           <p className="milestone__num">07</p>

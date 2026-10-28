@@ -49,7 +49,8 @@ export function Invitation() {
         });
         names
           .from(q(".invite__amp path"), { drawSVG: "0%", fillOpacity: 0, duration: 1.8, ease: "drift" }, 0.35)
-          .to(q(".invite__amp path"), { fillOpacity: 1, strokeOpacity: 0, duration: 0.8 }, 1.6);
+          .to(q(".invite__amp path"), { fillOpacity: 1, strokeOpacity: 0, duration: 0.8 }, 1.6)
+          .from(q(".invite__surname"), { autoAlpha: 0, letterSpacing: "0.9em", duration: 1.6, stagger: 0.15, ease: "drift" }, 0.7);
 
         SplitText.create(q(".invite__lines")[0], {
           type: "words",
@@ -71,7 +72,7 @@ export function Invitation() {
   );
 
   return (
-    <section ref={root} id="invitation" className="section invite" data-tone="paper" aria-labelledby="invite-title">
+    <section ref={root} id="invitation" className="section invite" aria-labelledby="invite-title">
       <p className="eyebrow invite__eyebrow">{inv.eyebrow}</p>
       <div className="invite__portraits">
         <figure className="invite__portrait">
@@ -84,11 +85,17 @@ export function Invitation() {
         </figure>
       </div>
       <h2 id="invite-title" className="invite__names">
-        <span className="invite__name">{site.names.bride}</span>
+        <span className="invite__person">
+          <span className="invite__name">{site.names.bride}</span>
+          <span className="invite__surname">{site.names.brideSurname}</span>
+        </span>
         <svg className="invite__amp" viewBox={monogram.ampSolo.viewBox} role="img" aria-label="and">
           <path d={monogram.ampSolo.d} />
         </svg>
-        <span className="invite__name">{site.names.groom}</span>
+        <span className="invite__person">
+          <span className="invite__name">{site.names.groom}</span>
+          <span className="invite__surname">{site.names.groomSurname}</span>
+        </span>
       </h2>
       <p className="invite__lines">
         {inv.lines[0]}

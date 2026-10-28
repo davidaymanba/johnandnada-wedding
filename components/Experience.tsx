@@ -7,15 +7,12 @@ import { smooth } from "@/lib/lenis";
 import { onIntroDone } from "@/lib/intro-state";
 import { site } from "@/content/site";
 
-const TONES: Record<string, string> = {
-  night: "#1C2230",
-  paper: "#F0EEE9",
-  deep: "#141925",
-};
+type Theme = "dark" | "light";
+const THEME_KEY = "nj-theme";
+const THEME_COLOR: Record<Theme, string> = { dark: "#1C2230", light: "#F0EEE9" };
 
-/** Client shell: smooth scrolling, scroll-scrubbed background tone, progress hairline, music. */
+/** Client shell: smooth scrolling, progress hairline, theme toggle, music. */
 export function Experience({ children }: { children: ReactNode }) {
-  const bg = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const [opened, setOpened] = useState(false);
 
@@ -39,49 +36,65 @@ export function Experience({ children }: { children: ReactNode }) {
   }, []);
 
   useGSAP(() => {
-    const layer = bg.current!;
-    const zones = gsap.utils.toArray<HTMLElement>("[data-tone]");
-    if (!zones.length) return;
-    const first = TONES[zones[0].dataset.tone!] ?? TONES.night;
-    gsap.set(layer, { backgroundColor: first });
-    document.documentElement.classList.add("tones");
-    let prev = first;
-    zones.slice(1).forEach((zone) => {
-      const next = TONES[zone.dataset.tone!] ?? TONES.night;
-      if (next === prev) return;
-      const from = prev;
-      const mix = gsap.utils.interpolate(from, next);
-      ScrollTrigger.create({
-        trigger: zone,
-        start: "top 72%",
-        end: "top 42%",
-        onUpdate: (self) => gsap.set(layer, { backgroundColor: mix(self.progress) }),
-        onLeave: () => gsap.set(layer, { backgroundColor: next }),
-        onLeaveBack: () => gsap.set(layer, { backgroundColor: from }),
-      });
-      prev = next;
-    });
-
     gsap.fromTo(
       bar.current,
       { scaleX: 0 },
       { scaleX: 1, ease: "none", scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.4 } },
     );
-
     // Fonts settle → line breaks change → re-measure everything once.
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
   });
 
   return (
     <>
-      <div ref={bg} className="tone-layer" aria-hidden="true" />
       <div className="grain" aria-hidden="true" />
       <div className={`progress ${opened ? "is-on" : ""}`} aria-hidden="true">
         <div ref={bar} className="progress__bar" />
       </div>
+      <ThemeToggle visible={opened} />
       {site.music && opened && <MusicToggle src={site.music} />}
       {children}
     </>
+  );
+}
+
+function ThemeToggle({ visible }: { visible: boolean }) {
+  const [theme, setTheme] = useState<Theme>("dark");
+  useEffect(() => {
+    const t: Theme = document.documentElement.dataset.theme === "light" ? "light" : "dark";
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", THEME_COLOR[t]);
+    setTheme(t);
+  }, []);
+
+  const toggle = () => {
+    const next: Theme = theme === "dark" ? "light" : "dark";
+    const apply = () => {
+      document.documentElement.dataset.theme = next;
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", THEME_COLOR[next]);
+      setTheme(next);
+    };
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {}
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    if (doc.startViewTransition && !window.matchMedia(MQ.reduce).matches) doc.startViewTransition(apply);
+    else apply();
+  };
+
+  const label = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
+  return (
+    <button type="button" className={`fab theme-toggle ${visible ? "is-on" : ""}`} onClick={toggle} aria-label={label} title={label} tabIndex={visible ? 0 : -1}>
+      {theme === "dark" ? (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" />
+          <path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19.5 14.6A8 8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1Z" />
+        </svg>
+      )}
+    </button>
   );
 }
 
@@ -108,7 +121,7 @@ function MusicToggle({ src }: { src: string }) {
   return (
     <>
       <audio ref={audio} src={src} loop preload="auto" />
-      <button type="button" className={`music ${on ? "is-on" : ""}`} aria-pressed={on} aria-label={on ? "Pause music" : "Play music"} onClick={toggle}>
+      <button type="button" className={`fab music is-on ${on ? "is-playing" : ""}`} aria-pressed={on} aria-label={on ? "Pause music" : "Play music"} onClick={toggle}>
         <span className="music__bars" aria-hidden="true">
           <i /> <i /> <i /> <i />
         </span>

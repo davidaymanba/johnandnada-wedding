@@ -118,7 +118,7 @@ export function Countdown() {
   );
 
   return (
-    <section ref={root} id="countdown" className="section countdown" data-tone="night" aria-labelledby="countdown-title">
+    <section ref={root} id="countdown" className="section countdown" aria-labelledby="countdown-title">
       <div className="countdown__head">
         <p className="eyebrow">{site.countdown.eyebrow}</p>
         <h2 id="countdown-title" className="countdown__title">

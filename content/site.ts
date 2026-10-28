@@ -33,9 +33,14 @@ export type Photo = {
 const p = (src: StaticImageData, alt: string, pos = "50% 40%"): Photo => ({ src, alt, pos });
 
 export const site = {
-  names: { bride: "Nada", groom: "John" },
+  names: {
+    bride: "Nada",
+    brideSurname: "Nassef",
+    groom: "John",
+    groomSurname: "Michel",
+  },
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://nada-and-john.vercel.app",
-  title: "Nada & John — Wedding Invitation",
+  title: "Nada Nassef & John Michel — Wedding Invitation",
   description: "Wednesday, November 11, 2026 · 7:00 PM · The First Evangelical Church",
 
   event: {
@@ -202,55 +207,47 @@ export type VersePlacement =
 
 export type Verse = {
   placement: VersePlacement;
-  en: string;
-  ar: string;
-  refEn: string;
-  refAr: string;
+  /** King James Version */
+  text: string;
+  ref: string;
 };
 
 export const verses: Verse[] = [
   {
     placement: "opening",
-    en: "What man is he that feareth the LORD? him shall he teach in the way that he shall choose. His soul shall dwell at ease; and his seed shall inherit the earth.",
-    ar: "من هو الانسان الخائف الرب؟ يعلمه طريقا يختاره. نفسه في الخير تبيت، ونسله يرث الأرض",
-    refEn: "Psalm 25:12–13",
-    refAr: "مزمور ٢٥: ١٢-١٣",
+    text: "What man is he that feareth the LORD? him shall he teach in the way that he shall choose. His soul shall dwell at ease; and his seed shall inherit the earth.",
+    ref: "Psalm 25:12–13",
   },
   {
     placement: "after-beginning",
-    en: "Delight thyself also in the LORD; and he shall give thee the desires of thine heart. Commit thy way unto the LORD; trust also in him; and he shall bring it to pass.",
-    ar: "وَتَلَذَّذْ بِٱلرَّبِّ فَيُعْطِيَكَ سُؤْلَ قَلْبِكَ. سَلِّمْ لِلرَّبِّ طَرِيقَكَ وَٱتَّكِلْ عَلَيْهِ وَهُوَ يُجْرِي",
-    refEn: "Psalm 37:4–5",
-    refAr: "اَلْمَزَامِيرُ ٣٧: ٤-٥",
+    text: "Delight thyself also in the LORD; and he shall give thee the desires of thine heart. Commit thy way unto the LORD; trust also in him; and he shall bring it to pass.",
+    ref: "Psalm 37:4–5",
   },
   {
     placement: "after-walking",
-    en: "The steps of a good man are ordered by the LORD: and he delighteth in his way.",
-    ar: "مِنْ قِبَلِ ٱلرَّبِّ تَتَثَبَّتُ خَطَوَاتُ ٱلْإِنْسَانِ وَفِي طَرِيقِهِ يُسَرُّ",
-    refEn: "Psalm 37:23",
-    refAr: "اَلْمَزَامِيرُ ٣٧: ٢٣",
+    text: "The steps of a good man are ordered by the LORD: and he delighteth in his way.",
+    ref: "Psalm 37:23",
   },
   {
     placement: "after-engagement",
-    en: "Wherefore the LORD God of Israel saith, I said indeed that thy house, and the house of thy father, should walk before me for ever: but now the LORD saith, Be it far from me; for them that honour me I will honour, and they that despise me shall be lightly esteemed.",
-    ar: "لِذَلِكَ يَقُولُ ٱلرَّبُّ إِلَهُ إِسْرَائِيلَ: إِنِّي قُلْتُ إِنَّ بَيْتَكَ وَبَيْتَ أَبِيكَ يَسِيرُونَ أَمَامِي إِلَى ٱلْأَبَدِ. وَٱلْآنَ يَقُولُ ٱلرَّبُّ: حَاشَا لِي! فَإِنِّي أُكْرِمُ ٱلَّذِينَ يُكْرِمُونَنِي، وَٱلَّذِينَ يَحْتَقِرُونَنِي يَصْغُرُونَ",
-    refEn: "1 Samuel 2:30",
-    refAr: "صَمُوئِيلَ ٱلْأَوَّلُ ٢: ٣٠",
+    text: "Wherefore the LORD God of Israel saith, I said indeed that thy house, and the house of thy father, should walk before me for ever: but now the LORD saith, Be it far from me; for them that honour me I will honour, and they that despise me shall be lightly esteemed.",
+    ref: "1 Samuel 2:30",
   },
   {
     placement: "before-countdown",
-    en: "…keep through thine own name those whom thou hast given me, that they may be one, as we are.",
-    ar: "... ٱحْفَظْهُمْ فِي ٱسْمِكَ ٱلَّذِينَ أَعْطَيْتَنِي، لِيَكُونُوا وَاحِدًا كَمَا نَحْنُ",
-    refEn: "John 17:11",
-    refAr: "يُوحَنَّا ١٧: ١١",
+    text: "…keep through thine own name those whom thou hast given me, that they may be one, as we are.",
+    ref: "John 17:11",
   },
   {
     placement: "closing",
-    en: "And I have declared unto them thy name, and will declare it: that the love wherewith thou hast loved me may be in them, and I in them.",
-    ar: "وَعَرَّفْتُهُمُ ٱسْمَكَ وَسَأُعَرِّفُهُمْ، لِيَكُونَ فِيهِمُ ٱلْحُبُّ ٱلَّذِي أَحْبَبْتَنِي بِهِ، وَأَكُونَ أَنَا فِيهِمْ",
-    refEn: "John 17:26",
-    refAr: "يُوحَنَّا ١٧: ٢٦",
+    text: "And I have declared unto them thy name, and will declare it: that the love wherewith thou hast loved me may be in them, and I in them.",
+    ref: "John 17:26",
   },
 ];
 
 export const verseAt = (placement: VersePlacement) => verses.find((v) => v.placement === placement);
+
+export const fullNames = {
+  bride: `${site.names.bride} ${site.names.brideSurname}`,
+  groom: `${site.names.groom} ${site.names.groomSurname}`,
+};

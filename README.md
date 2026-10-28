@@ -21,12 +21,16 @@ The door intro plays once per browser session (`sessionStorage`). Open a new tab
 
 ## Editing content
 
-Everything lives in **`content/site.ts`**: names, date and time, venue, the **Google Maps link**, story steps, photos (with `pos` = CSS `object-position` so faces stay in frame), gallery, guestbook copy, closing, music, and the `verses` array (each verse has `placement`, `en`, `ar`, `refEn`, `refAr` — move or delete freely).
+Everything lives in **`content/site.ts`**: names, date and time, venue, the **Google Maps link**, story steps, photos (with `pos` = CSS `object-position` so faces stay in frame), gallery, guestbook copy, closing, music, and the `verses` array (each verse has `placement`, `text` (KJV) and `ref` — move or delete freely). Full names live in `site.names` (`brideSurname`, `groomSurname`).
 
 - **Maps link:** `site.event.mapsUrl` is currently a search for "The First Evangelical Church". Replace it with the exact link.
 - **Music:** put an mp3 in `public/media/` and set `site.music = "/media/your-track.mp3"`. A floating toggle appears after the door opens. `null` = no music.
 - **Photos:** originals are in `../wedding-kit/assets`. `npm run media` re-creates `assets/photos/*` and the video/door files (needs `ffmpeg`). `next/image` serves AVIF/WebP at responsive sizes with blur placeholders automatically.
 - **Monogram:** `npm run monogram` rebuilds `content/monogram.ts` from the real Cormorant Garamond / Pinyon Script glyph outlines.
+
+## Theme
+
+The whole page is one theme: **navy (default)** or **light**. Guests switch with the sun/moon button (top right, after the door opens); the choice is remembered on their device. The intro film and the photo lightbox always stay dark. Colours are CSS variables in `app/globals.css` (`:root[data-theme="dark"]` / `[data-theme="light"]`).
 
 ## Guestbook (Supabase)
 

@@ -1,11 +1,11 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
-/* ───────────────────────────── Tokens ─────────────────────────────
-   Palette = the Neno & Tota reference (exact hex) + two derived shades. */
+/* ───────────────────────────── Palette ─────────────────────────────
+   The Neno & Tota reference palette (exact hex) + derived shades. */
 @theme {
   --color-midnight: #1c2230;
-  --color-deep: #141925; /* derived: midnight, one step darker */
+  --color-deep: #141925; /* derived: one step below midnight */
   --color-ink: #24212a;
   --color-gold: #c8a96a;
   --color-gold-deep: #a8873f;
@@ -18,7 +18,62 @@
   --font-serif: var(--nf-serif), "Cormorant Garamond", Georgia, serif;
   --font-script: var(--nf-script), "Pinyon Script", cursive;
   --font-sans: var(--nf-sans), "Jost", system-ui, sans-serif;
-  --font-arabic: var(--nf-arabic), "Amiri", "Noto Naskh Arabic", serif;
+}
+
+/* ───────────────────────────── Themes ─────────────────────────────
+   One theme for the whole page: all navy (default) or all light. */
+:root,
+:root[data-theme="dark"],
+.intro,
+.lightbox {
+  color-scheme: dark;
+  --bg: #1c2230;
+  --bg-deep: #141925;
+  --fg: #f0eee9;
+  --fg-strong: #f7f3ea;
+  --fg-2: rgb(240 238 233 / 0.72);
+  --accent: #c8a96a; /* lines, ornaments, large type */
+  --accent-text: #c8a96a; /* small text in gold */
+  --hair: rgb(200 169 106 / 0.36);
+  --faint: rgb(240 238 233 / 0.14);
+  --surface: rgb(255 255 255 / 0.035);
+  --surface-solid: #232a3a;
+  --surface-hover: #2b3345;
+  --shadow: 0 1px 0 rgb(200 169 106 / 0.12), 0 22px 50px -26px rgb(0 0 0 / 0.6);
+  --btn-fill: #c8a96a;
+  --btn-fill-fg: #1c2230;
+  --solid: #c8a96a;
+  --solid-fg: #1c2230;
+  --solid-hover: #f0eee9;
+  --solid-hover-fg: #1c2230;
+  --glow: rgb(200 169 106 / 0.14);
+  --ray: rgb(232 210 160 / 0.16);
+  --error: #eaa595;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f0eee9;
+  --bg-deep: #e9e3d9; /* derived: ivory warmed toward blush sand */
+  --fg: #1c2230;
+  --fg-strong: #1c2230;
+  --fg-2: #6b5a4e;
+  --accent: #a8873f;
+  --accent-text: #7a5e27;
+  --hair: rgb(122 94 39 / 0.32);
+  --faint: rgb(28 34 48 / 0.12);
+  --surface: rgb(255 253 248 / 0.6);
+  --surface-solid: #fffdf8;
+  --surface-hover: #f0eee9;
+  --shadow: 0 1px 0 rgb(122 94 39 / 0.12), 0 18px 50px -24px rgb(28 34 48 / 0.25);
+  --btn-fill: #1c2230;
+  --btn-fill-fg: #f0eee9;
+  --solid: #1c2230;
+  --solid-fg: #f0eee9;
+  --solid-hover: #7a5e27;
+  --solid-hover-fg: #fffdf8;
+  --glow: rgb(200 169 106 / 0.22);
+  --ray: rgb(200 169 106 / 0.18);
+  --error: #8f3b2e;
 }
 
 :root {
@@ -30,17 +85,9 @@
   --fs-body: clamp(1.15rem, 1.05rem + 0.35vw, 1.35rem);
   --fs-lead: clamp(1.45rem, 1.1rem + 1.4vw, 2.2rem);
   --fs-h2: clamp(2.7rem, 1.6rem + 4.6vw, 5.6rem);
-  --fs-display: clamp(4.6rem, 1.8rem + 13vw, 12rem);
 
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-drift: cubic-bezier(0.45, 0, 0.25, 1);
-
-  --on-night: #f0eee9;
-  --on-night-2: rgb(240 238 233 / 0.72);
-  --on-paper: #1c2230;
-  --on-paper-2: #6b5a4e;
-  --hair-night: rgb(200 169 106 / 0.38);
-  --hair-paper: rgb(122 94 39 / 0.32);
 }
 
 /* ───────────────────────────── Base ───────────────────────────── */
@@ -50,12 +97,12 @@
   box-sizing: border-box;
 }
 html {
-  background: var(--color-midnight);
+  background: var(--bg);
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-gold-deep) var(--color-midnight);
+  scrollbar-color: var(--accent) var(--bg);
 }
 html.is-locked,
 html.is-locked body {
@@ -64,7 +111,8 @@ html.is-locked body {
 body {
   margin: 0;
   min-height: 100svh;
-  color: var(--on-paper);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-serif);
   font-size: var(--fs-body);
   line-height: 1.6;
@@ -92,7 +140,7 @@ a {
   color: var(--color-midnight);
 }
 :focus-visible {
-  outline: 1.5px solid var(--color-gold);
+  outline: 1.5px solid var(--accent);
   outline-offset: 4px;
   border-radius: 2px;
 }
@@ -103,12 +151,6 @@ a {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-}
-[lang="ar"] {
-  font-family: var(--font-arabic);
-  letter-spacing: 0 !important;
-  line-height: 2.1;
-  text-transform: none !important;
 }
 .mask {
   display: inline-block;
@@ -121,13 +163,14 @@ a {
   display: inline-block;
 }
 
-/* Fixed layers */
-.tone-layer {
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  background: var(--color-midnight);
+/* Theme switch: a soft cross-fade (View Transitions where supported). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.7s;
+  animation-timing-function: var(--ease-drift);
 }
+
+/* Fixed layers */
 .grain {
   position: fixed;
   inset: -50%;
@@ -135,6 +178,9 @@ a {
   pointer-events: none;
   opacity: 0.07;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 1.4 -.25'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+:root[data-theme="light"] .grain {
+  opacity: 0.05;
 }
 .progress {
   position: fixed;
@@ -155,25 +201,57 @@ a {
   transform: scaleX(0);
 }
 
-/* Sections own a fallback background; with JS the fixed tone layer scrubs between them. */
 .section {
   position: relative;
   padding: var(--pad-y) var(--gutter);
 }
-[data-tone="night"] {
-  background: var(--color-midnight);
-  color: var(--on-night);
+
+/* Floating controls (after the door opens) */
+.fab {
+  position: fixed;
+  z-index: 75;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--hair);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--accent);
+  opacity: 0;
+  translate: 0 -8px;
+  transition:
+    opacity 0.8s var(--ease-drift),
+    translate 0.8s var(--ease-reveal),
+    border-color 0.4s;
 }
-[data-tone="deep"] {
-  background: var(--color-deep);
-  color: var(--on-night);
+.fab.is-on {
+  opacity: 1;
+  translate: 0 0;
 }
-[data-tone="paper"] {
-  background: var(--color-ivory);
-  color: var(--on-paper);
+@media (hover: hover) {
+  .fab:hover {
+    border-color: var(--accent);
+  }
 }
-html.tones [data-tone] {
-  background: transparent;
+.theme-toggle {
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+}
+.theme-toggle svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+.music {
+  top: auto;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  right: max(14px, env(safe-area-inset-right));
 }
 
 /* ───────────────────────────── Shared type ───────────────────────────── */
@@ -184,12 +262,7 @@ html.tones [data-tone] {
   font-weight: 400;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--color-gold-ink);
-}
-[data-tone="night"] .eyebrow,
-[data-tone="deep"] .eyebrow,
-.intro .eyebrow {
-  color: var(--color-gold);
+  color: var(--accent-text);
 }
 .section-title {
   margin: 0;
@@ -201,22 +274,18 @@ html.tones [data-tone] {
 }
 .amp {
   font-family: var(--font-script);
-  color: var(--color-gold);
+  color: var(--accent);
   font-weight: 400;
 }
 .ornament {
   width: min(220px, 60vw);
   height: auto;
   margin: 0 auto 2.2rem;
-  color: var(--color-gold);
-}
-[data-tone="paper"] .ornament {
-  color: var(--color-gold-deep);
+  color: var(--accent);
 }
 
 /* Buttons */
 .btn {
-  --b: currentColor;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -224,7 +293,7 @@ html.tones [data-tone] {
   gap: 0.6em;
   min-height: 48px;
   padding: 0.9rem 1.6rem;
-  border: 1px solid var(--hair-paper);
+  border: 1px solid var(--hair);
   border-radius: 999px;
   font-family: var(--font-sans);
   font-size: 0.72rem;
@@ -232,6 +301,7 @@ html.tones [data-tone] {
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
+  color: var(--fg);
   overflow: hidden;
   isolation: isolate;
   transition:
@@ -244,15 +314,15 @@ html.tones [data-tone] {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--color-midnight);
+  background: var(--btn-fill);
   border-radius: inherit;
   transform: translateY(101%);
   transition: transform 0.6s var(--ease-reveal);
 }
 @media (hover: hover) {
   .btn:hover {
-    color: var(--color-ivory);
-    border-color: var(--color-midnight);
+    color: var(--btn-fill-fg);
+    border-color: var(--btn-fill);
   }
   .btn:hover::before {
     transform: translateY(0);
@@ -262,31 +332,17 @@ html.tones [data-tone] {
   transform: scale(0.97);
 }
 .btn--solid {
-  background: var(--color-midnight);
-  color: var(--color-ivory);
-  border-color: var(--color-midnight);
+  background: var(--solid);
+  color: var(--solid-fg);
+  border-color: var(--solid);
 }
 .btn--solid::before {
-  background: var(--color-gold-deep);
+  background: var(--solid-hover);
 }
 @media (hover: hover) {
   .btn--solid:hover {
-    border-color: var(--color-gold-deep);
-  }
-}
-[data-tone="night"] .btn,
-.intro .btn {
-  border-color: var(--hair-night);
-  color: var(--on-night);
-}
-[data-tone="night"] .btn::before,
-.intro .btn::before {
-  background: var(--color-gold);
-}
-@media (hover: hover) {
-  [data-tone="night"] .btn:hover,
-  .intro .btn:hover {
-    color: var(--color-midnight);
+    color: var(--solid-hover-fg);
+    border-color: var(--solid-hover);
   }
 }
 .btn:disabled {
@@ -306,27 +362,27 @@ html.tones [data-tone] {
   overflow: visible;
 }
 .monogram__frame {
-  color: var(--color-gold);
+  color: var(--accent);
 }
 .monogram__glyph {
-  fill: var(--color-ivory);
-  stroke: var(--color-ivory);
+  fill: var(--fg);
+  stroke: var(--fg);
   stroke-width: 0.6;
   fill-opacity: 1;
 }
 .monogram__amp {
-  fill: var(--color-gold);
-  stroke: var(--color-gold);
+  fill: var(--accent);
+  stroke: var(--accent);
 }
 
-/* ───────────────────────────── Intro ───────────────────────────── */
+/* ───────────────────────────── Intro (always dark: it's a film) ───────────────────────────── */
 .intro {
   position: fixed;
   inset: 0;
   z-index: 100;
   overflow: hidden;
   background: var(--color-midnight);
-  color: var(--on-night);
+  color: var(--fg);
   height: 100lvh;
   cursor: default;
   -webkit-tap-highlight-color: transparent;
@@ -455,11 +511,11 @@ html[data-intro="skip"] .intro {
   opacity: 0;
   background:
     radial-gradient(ellipse 38% 46% at var(--knock-x, 50%) calc(var(--knock-y, 60%) - 4%), transparent 0%, rgb(20 25 37 / 0.35) 55%, rgb(20 25 37 / 0.88) 100%),
-    linear-gradient(180deg, rgb(20 25 37 / 0.75) 0%, transparent 26%, transparent 70%, rgb(20 25 37 / 0.85) 100%);
+    linear-gradient(180deg, rgb(20 25 37 / 0.8) 0%, transparent 30%, transparent 70%, rgb(20 25 37 / 0.85) 100%);
 }
 .intro__title {
   position: absolute;
-  inset: max(7svh, calc(env(safe-area-inset-top) + 28px)) 0 auto;
+  inset: max(6svh, calc(env(safe-area-inset-top) + 24px)) 0 auto;
   text-align: center;
   pointer-events: none;
 }
@@ -468,19 +524,30 @@ html[data-intro="skip"] .intro {
   opacity: 0;
 }
 .intro__title .eyebrow {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.7rem;
+  color: var(--color-gold);
 }
 .intro__names {
+  display: grid;
+  justify-items: center;
   margin: 0;
   font-weight: 300;
-  font-size: clamp(2.3rem, 1.6rem + 3.4vw, 4.4rem);
-  line-height: 1;
+  font-size: clamp(1.9rem, 1.4rem + 2.4vw, 3.4rem);
+  line-height: 1.02;
   letter-spacing: 0.01em;
-  text-shadow: 0 2px 30px rgb(20 25 37 / 0.6);
+  text-shadow: 0 2px 30px rgb(20 25 37 / 0.7);
 }
 .intro__names .amp {
-  font-size: 0.9em;
-  margin: 0 0.12em;
+  font-size: 1.25em;
+  line-height: 0.75;
+}
+@media (min-width: 900px) {
+  .intro__names {
+    display: block;
+  }
+  .intro__names .amp {
+    margin: 0 0.25em;
+  }
 }
 .intro__ring {
   position: absolute;
@@ -617,7 +684,7 @@ html.js .intro__preload {
   top: -10%;
   width: 34%;
   height: 130%;
-  background: linear-gradient(180deg, rgb(232 210 160 / 0.16), rgb(232 210 160 / 0.02) 70%, transparent);
+  background: linear-gradient(180deg, var(--ray), transparent 70%);
   filter: blur(18px);
   transform: skewX(-18deg);
   animation: ray 9s var(--ease-drift) infinite alternate;
@@ -648,7 +715,7 @@ html.js .intro__preload {
   position: absolute;
   inset: auto 0 0;
   height: 40%;
-  background: radial-gradient(ellipse 60% 80% at 50% 100%, rgb(200 169 106 / 0.12), transparent 70%);
+  background: radial-gradient(ellipse 60% 80% at 50% 100%, var(--glow), transparent 70%);
   pointer-events: none;
 }
 .verse__inner {
@@ -661,16 +728,15 @@ html.js .verse__inner {
   visibility: hidden;
 }
 .verse__text {
-  margin: 0;
+  max-width: 19em;
+  margin: 0 auto;
   font-style: italic;
   font-weight: 300;
   font-size: clamp(1.75rem, 1.05rem + 3.3vw, 3.5rem);
   line-height: 1.22;
   letter-spacing: -0.005em;
   text-wrap: balance;
-  color: #f7f3ea;
-  max-width: 19em;
-  margin-inline: auto;
+  color: var(--fg-strong);
 }
 .verse__ref,
 .interlude__ref {
@@ -681,13 +747,7 @@ html.js .verse__inner {
   font-size: 0.72rem;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--color-gold);
-}
-.verse__ar {
-  max-width: 34ch;
-  margin: 1.4rem auto 0;
-  font-size: clamp(1rem, 0.92rem + 0.4vw, 1.2rem);
-  color: var(--on-night-2);
+  color: var(--accent-text);
 }
 .scroll-cue {
   position: absolute;
@@ -702,12 +762,12 @@ html.js .verse__inner {
   letter-spacing: 0.4em;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 .scroll-cue i {
   width: 1px;
   height: 44px;
-  background: linear-gradient(var(--color-gold), transparent);
+  background: linear-gradient(var(--accent), transparent);
   transform-origin: top;
   animation: cue 2.4s var(--ease-drift) infinite;
 }
@@ -750,21 +810,6 @@ html.js .verse__inner {
 }
 .interlude__ref {
   margin-top: 1.5rem;
-  color: var(--color-gold-ink);
-}
-[data-tone="night"] .interlude__ref,
-[data-tone="deep"] .interlude__ref {
-  color: var(--color-gold);
-}
-.interlude__ar {
-  max-width: 34ch;
-  margin: 1rem auto 0;
-  font-size: clamp(0.98rem, 0.9rem + 0.35vw, 1.15rem);
-  color: var(--on-paper-2);
-}
-[data-tone="night"] .interlude__ar,
-[data-tone="deep"] .interlude__ar {
-  color: var(--on-night-2);
 }
 .interlude--wide {
   max-width: 46rem;
@@ -784,19 +829,16 @@ html.js .verse__inner {
   height: calc(100% + 18px);
   overflow: visible;
   fill: none;
-  stroke: var(--color-gold-deep);
+  stroke: var(--accent);
   stroke-width: 1;
   pointer-events: none;
-}
-[data-tone="night"] .arch__outline {
-  stroke: var(--color-gold);
 }
 .arch__clip {
   position: absolute;
   inset: 0;
   clip-path: url(#arch-clip);
   overflow: hidden;
-  background: rgb(28 34 48 / 0.08);
+  background: var(--faint);
 }
 .arch__reveal {
   position: absolute;
@@ -835,41 +877,53 @@ html.js .verse__inner {
   font-size: 0.64rem;
   letter-spacing: 0.36em;
   text-transform: uppercase;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
 }
 .invite__names {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  column-gap: 0.18em;
   margin: 0;
   font-weight: 300;
-  font-size: clamp(4.4rem, 1.6rem + 12vw, 12rem);
   line-height: 0.9;
   letter-spacing: -0.02em;
 }
+.invite__person {
+  display: grid;
+  justify-items: center;
+}
 .invite__name {
   display: inline-block;
+  font-size: clamp(4.4rem, 1.6rem + 12vw, 10rem);
+}
+.invite__surname {
+  margin-top: 0.7rem;
+  margin-right: -0.5em;
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 0.65rem + 0.3vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.5em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--accent-text);
 }
 .invite__amp {
-  width: 0.5em;
+  width: clamp(2.6rem, 1.2rem + 6vw, 5rem);
   height: auto;
-  margin: -0.06em 0 -0.1em;
+  margin: 1.1rem 0 0.9rem;
   overflow: visible;
 }
 .invite__amp path {
-  fill: var(--color-gold-deep);
-  stroke: var(--color-gold-deep);
+  fill: var(--accent);
+  stroke: var(--accent);
   stroke-width: 0.6;
 }
 .invite__lines {
   max-width: 28ch;
-  margin: clamp(2.2rem, 5vw, 3.4rem) 0 0;
+  margin: clamp(2.6rem, 6vw, 3.6rem) 0 0;
   font-style: italic;
   font-size: var(--fs-lead);
   line-height: 1.4;
-  color: var(--on-paper);
   text-wrap: balance;
 }
 
@@ -891,8 +945,8 @@ html.js .verse__inner {
   width: 100%;
   height: 100%;
   overflow: visible;
-  fill: rgb(255 253 248 / 0.55);
-  stroke: var(--color-gold-deep);
+  fill: var(--surface);
+  stroke: var(--accent);
   stroke-width: 1;
 }
 .details__card > *:not(.details__frame) {
@@ -915,7 +969,7 @@ html.js .verse__inner {
   font-size: 0.72rem;
   letter-spacing: 0.5em;
   text-transform: uppercase;
-  color: var(--color-gold-ink);
+  color: var(--accent-text);
   margin-right: -0.5em;
 }
 .details__day {
@@ -927,9 +981,10 @@ html.js .verse__inner {
   line-height: 1;
   letter-spacing: -0.02em;
   font-variant-numeric: lining-nums;
+  color: var(--fg-strong);
 }
 .details__dot {
-  color: var(--color-gold-deep);
+  color: var(--accent);
   font-size: 0.6em;
 }
 .details__rows {
@@ -937,7 +992,7 @@ html.js .verse__inner {
   gap: 1rem;
   margin: 0 auto;
   padding: 1.8rem 0 0;
-  border-top: 1px solid var(--hair-paper);
+  border-top: 1px solid var(--hair);
   list-style: none;
   max-width: 24rem;
 }
@@ -953,7 +1008,7 @@ html.js .verse__inner {
   flex: none;
   width: 22px;
   height: 22px;
-  color: var(--color-gold-deep);
+  color: var(--accent);
 }
 .details__actions {
   display: flex;
@@ -975,10 +1030,10 @@ html.js .verse__inner {
   display: grid;
   min-width: 15rem;
   padding: 0.4rem;
-  border: 1px solid var(--hair-paper);
+  border: 1px solid var(--hair);
   border-radius: 14px;
-  background: var(--color-soft-white);
-  box-shadow: 0 22px 60px rgb(28 34 48 / 0.18);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow);
 }
 .cal__menu[hidden] {
   display: none;
@@ -992,7 +1047,7 @@ html.js .verse__inner {
 }
 .cal__menu a:hover,
 .cal__menu a:focus-visible {
-  background: var(--color-ivory);
+  background: var(--surface-hover);
 }
 .toast {
   position: fixed;
@@ -1003,8 +1058,8 @@ html.js .verse__inner {
   margin: 0;
   padding: 0.8rem 1.3rem;
   border-radius: 999px;
-  background: var(--color-midnight);
-  color: var(--color-ivory);
+  background: var(--fg);
+  color: var(--bg);
   font-family: var(--font-sans);
   font-size: 0.8rem;
   letter-spacing: 0.06em;
@@ -1056,12 +1111,12 @@ html.js .verse__inner {
   fill: none;
 }
 .story__line-ghost {
-  stroke: var(--hair-paper);
+  stroke: var(--hair);
   stroke-width: 1;
   stroke-dasharray: 2 6;
 }
 .story__line-path {
-  stroke: var(--color-gold-deep);
+  stroke: var(--accent);
   stroke-width: 1.4;
   stroke-linecap: round;
 }
@@ -1073,8 +1128,8 @@ html.js .verse__inner {
   height: 13px;
   margin: -6.5px 0 0 -6.5px;
   rotate: 45deg;
-  border: 1px solid var(--color-gold-deep);
-  background: var(--color-ivory);
+  border: 1px solid var(--accent);
+  background: var(--bg);
   transition:
     background 0.6s var(--ease-reveal),
     box-shadow 0.6s var(--ease-reveal),
@@ -1082,7 +1137,7 @@ html.js .verse__inner {
 }
 .story__node.is-lit {
   background: var(--color-gold);
-  box-shadow: 0 0 0 6px rgb(200 169 106 / 0.18);
+  box-shadow: 0 0 0 6px var(--glow);
   scale: 1.15;
 }
 .milestone {
@@ -1096,19 +1151,16 @@ html.js .verse__inner {
   font-family: var(--font-sans);
   font-size: 0.66rem;
   letter-spacing: 0.4em;
-  color: var(--color-gold-ink);
-}
-[data-tone="night"] .milestone__num {
-  color: var(--color-gold);
+  color: var(--accent-text);
 }
 .milestone__date {
   margin: 0 0 0.4rem;
-  font-variant-numeric: lining-nums;
   font-family: var(--font-sans);
   font-size: 0.78rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--on-paper-2);
+  font-variant-numeric: lining-nums;
+  color: var(--fg-2);
 }
 .milestone__title {
   margin: 0;
@@ -1122,19 +1174,16 @@ html.js .verse__inner {
 .milestone__body {
   max-width: 32ch;
   margin: 1.1rem 0 0;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
   font-size: clamp(1.18rem, 1.05rem + 0.45vw, 1.45rem);
   line-height: 1.55;
-}
-[data-tone="night"] .milestone__body {
-  color: var(--on-night-2);
 }
 .frame {
   position: relative;
   overflow: hidden;
   aspect-ratio: 4 / 5;
   border-radius: 2px;
-  background: rgb(28 34 48 / 0.08);
+  background: var(--faint);
 }
 .frame__reveal {
   position: absolute;
@@ -1201,7 +1250,7 @@ html.js .verse__inner {
   display: none;
 }
 
-/* Finale: the wedding day, at night */
+/* Finale: the wedding day */
 .finale {
   display: grid;
   justify-items: center;
@@ -1219,14 +1268,14 @@ html.js .verse__inner {
 }
 .finale__date {
   display: flex;
-  font-variant-numeric: lining-nums;
   gap: 0.16em;
   margin: 0 0 1rem;
   font-weight: 300;
   font-size: clamp(3.4rem, 2rem + 7vw, 7rem);
   line-height: 1;
   letter-spacing: -0.01em;
-  color: var(--color-gold);
+  font-variant-numeric: lining-nums;
+  color: var(--accent);
 }
 .finale .milestone__body {
   margin-inline: auto;
@@ -1275,7 +1324,7 @@ html.js .verse__inner {
   font-size: clamp(4.2rem, 2.4rem + 8vw, 8.4rem);
   line-height: 1;
   font-variant-numeric: tabular-nums lining-nums;
-  color: #f7f3ea;
+  color: var(--fg-strong);
 }
 .digit {
   display: block;
@@ -1297,13 +1346,13 @@ html.js .verse__inner {
   font-size: 0.64rem;
   letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--color-gold);
+  color: var(--accent-text);
   margin-right: -0.38em;
 }
 .unit__sep {
   width: 1px;
   height: 64px;
-  background: linear-gradient(transparent, var(--hair-night), transparent);
+  background: linear-gradient(transparent, var(--hair), transparent);
   margin: 0 clamp(1rem, 4vw, 2.6rem);
 }
 .journey {
@@ -1313,7 +1362,7 @@ html.js .verse__inner {
 .journey__line {
   position: relative;
   height: 1px;
-  background: rgb(240 238 233 / 0.16);
+  background: var(--faint);
   transform-origin: 0 50%;
 }
 .journey__fill {
@@ -1342,25 +1391,25 @@ html.js .verse__inner {
   font-size: 0.66rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 .journey__pct {
   font-family: var(--font-serif);
   font-size: 1.05rem;
   letter-spacing: 0;
   text-transform: none;
-  color: var(--color-gold);
+  color: var(--accent-text);
 }
 .journey__pct em {
   display: block;
   font-size: 0.85rem;
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 .countdown__when {
   margin: 3rem 0 0;
   font-style: italic;
   font-size: var(--fs-body);
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 
 /* ───────────────────────────── Guestbook ───────────────────────────── */
@@ -1374,7 +1423,7 @@ html.js .verse__inner {
   font-style: italic;
   font-size: var(--fs-lead);
   line-height: 1.35;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
 }
 .guestbook__grid {
   display: grid;
@@ -1387,9 +1436,9 @@ html.js .verse__inner {
   gap: 2rem;
   align-content: start;
   padding: clamp(1.6rem, 5vw, 2.8rem);
-  border: 1px solid var(--hair-paper);
+  border: 1px solid var(--hair);
   border-radius: 28px;
-  background: rgb(255 253 248 / 0.6);
+  background: var(--surface);
 }
 .field {
   position: relative;
@@ -1401,7 +1450,7 @@ html.js .verse__inner {
   font-size: 0.66rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
   padding: 0;
 }
 .field input,
@@ -1409,12 +1458,12 @@ html.js .verse__inner {
   width: 100%;
   padding: 0.5rem 0 0.7rem;
   border: 0;
-  border-bottom: 1px solid var(--hair-paper);
+  border-bottom: 1px solid var(--hair);
   border-radius: 0;
   background: transparent;
   font: inherit;
   font-size: max(16px, 1.25rem);
-  color: var(--on-paper);
+  color: var(--fg);
   resize: vertical;
 }
 .field textarea {
@@ -1430,7 +1479,7 @@ html.js .verse__inner {
   left: 0;
   right: 0;
   height: 1.5px;
-  background: var(--color-gold-deep);
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: 0 50%;
   transition: transform 0.9s var(--ease-reveal);
@@ -1448,7 +1497,7 @@ html.js .verse__inner {
   justify-self: end;
   font-family: var(--font-sans);
   font-size: 0.7rem;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
 }
 .chips {
   display: flex;
@@ -1471,7 +1520,7 @@ html.js .verse__inner {
   align-items: center;
   min-height: 44px;
   padding: 0.55rem 1.1rem;
-  border: 1px solid var(--hair-paper);
+  border: 1px solid var(--hair);
   border-radius: 999px;
   font-family: var(--font-sans);
   font-size: 0.8rem;
@@ -1483,12 +1532,12 @@ html.js .verse__inner {
     border-color 0.4s var(--ease-reveal);
 }
 .chip input:checked + span {
-  background: var(--color-midnight);
-  border-color: var(--color-midnight);
-  color: var(--color-ivory);
+  background: var(--solid);
+  border-color: var(--solid);
+  color: var(--solid-fg);
 }
 .chip input:focus-visible + span {
-  outline: 1.5px solid var(--color-gold-deep);
+  outline: 1.5px solid var(--accent);
   outline-offset: 3px;
 }
 .hp {
@@ -1507,16 +1556,16 @@ html.js .verse__inner {
   min-height: 1.5em;
   margin: 0;
   font-style: italic;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
 }
 .guestbook__status .is-error {
-  color: #8f3b2e;
+  color: var(--error);
 }
 .guestbook__note {
   margin: 0 0 1.5rem;
   font-style: italic;
   font-size: var(--fs-lead);
-  color: var(--on-paper-2);
+  color: var(--fg-2);
 }
 .guestbook__empty::before {
   content: "";
@@ -1524,7 +1573,7 @@ html.js .verse__inner {
   width: 40px;
   height: 1px;
   margin-bottom: 1.2rem;
-  background: var(--color-gold-deep);
+  background: var(--accent);
 }
 .guestbook__list {
   display: grid;
@@ -1536,10 +1585,8 @@ html.js .verse__inner {
 .blessing {
   padding: 1.6rem 1.6rem 1.3rem;
   border-radius: 22px;
-  background: var(--color-soft-white);
-  box-shadow:
-    0 1px 0 rgb(122 94 39 / 0.12),
-    0 18px 50px -24px rgb(28 34 48 / 0.25);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow);
 }
 .blessing[aria-busy="true"] {
   opacity: 0.75;
@@ -1561,19 +1608,19 @@ html.js .verse__inner {
   font-family: var(--font-sans);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
-  color: var(--on-paper-2);
+  color: var(--fg-2);
 }
 .blessing__name {
   font-weight: 500;
-  color: var(--on-paper);
+  color: var(--fg);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 .blessing__rel {
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid var(--hair-paper);
-  color: var(--color-gold-ink);
+  border: 1px solid var(--hair);
+  color: var(--accent-text);
 }
 .blessing time {
   margin-left: auto;
@@ -1603,6 +1650,7 @@ html.js .verse__inner {
   overflow: hidden;
   border-radius: 2px;
   aspect-ratio: 3 / 4;
+  background: var(--faint);
 }
 .tile--0,
 .tile--4 {
@@ -1634,7 +1682,7 @@ html.js .verse__inner {
   outline-offset: -6px;
 }
 
-/* Lightbox */
+/* Lightbox (always dark — photos read best on navy) */
 .lightbox {
   position: fixed;
   inset: 0;
@@ -1643,6 +1691,7 @@ html.js .verse__inner {
   place-items: center;
   padding: max(64px, env(safe-area-inset-top)) 12px max(64px, env(safe-area-inset-bottom));
   background: rgb(12 15 22 / 0.94);
+  color: var(--fg);
   touch-action: pan-y;
   user-select: none;
 }
@@ -1666,7 +1715,7 @@ html.js .verse__inner {
   font-family: var(--font-sans);
   font-size: 0.7rem;
   letter-spacing: 0.3em;
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 .lightbox__close,
 .lightbox__nav {
@@ -1676,8 +1725,8 @@ html.js .verse__inner {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  border: 1px solid var(--hair-night);
-  color: var(--color-ivory);
+  border: 1px solid var(--hair);
+  color: var(--fg);
   background: rgb(28 34 48 / 0.6);
   backdrop-filter: blur(6px);
 }
@@ -1709,6 +1758,8 @@ html.js .verse__inner {
   justify-items: center;
   text-align: center;
   padding-bottom: max(3rem, env(safe-area-inset-bottom));
+  /* the page settles a shade deeper at the very end — no hard edge */
+  background: linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 45%);
 }
 .closing .interlude {
   margin-top: 0;
@@ -1728,7 +1779,7 @@ html.js .verse__inner {
   width: 240%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(200 169 106 / 0.18), transparent 65%);
+  background: radial-gradient(circle, var(--glow), transparent 65%);
   pointer-events: none;
 }
 .closing__monogram {
@@ -1754,54 +1805,48 @@ html.js .verse__inner {
 .closing__with {
   font-family: var(--font-script);
   font-size: clamp(2rem, 1.6rem + 1.6vw, 2.8rem);
-  color: var(--color-gold);
+  color: var(--accent);
   line-height: 1.2;
 }
 .closing__names {
+  display: grid;
+  justify-items: center;
   font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem);
-  letter-spacing: 0.04em;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+}
+.closing__names .amp {
+  font-size: 1.35em;
+  line-height: 0.8;
 }
 .closing__date {
-  margin-top: 0.8rem;
+  margin-top: 1rem;
   font-family: var(--font-sans);
   font-size: 0.7rem;
   letter-spacing: 0.4em;
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 .closing__credit {
   margin: clamp(5rem, 12vw, 8rem) 0 0;
   font-family: var(--font-sans);
   font-size: 0.68rem;
   letter-spacing: 0.16em;
-  color: var(--on-night-2);
+  color: var(--fg-2);
 }
 .closing__credit a {
   text-decoration: none;
-  border-bottom: 1px solid var(--hair-night);
+  border-bottom: 1px solid var(--hair);
   padding-bottom: 2px;
-  transition: color 0.4s, border-color 0.4s;
+  transition:
+    color 0.4s,
+    border-color 0.4s;
 }
 .closing__credit a:hover {
-  color: var(--color-gold);
-  border-color: var(--color-gold);
+  color: var(--accent-text);
+  border-color: var(--accent);
 }
 
 /* Music */
-.music {
-  position: fixed;
-  right: max(16px, env(safe-area-inset-right));
-  bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: 75;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid var(--hair-night);
-  background: rgb(28 34 48 / 0.7);
-  backdrop-filter: blur(8px);
-  color: var(--color-gold);
-}
 .music__bars {
   display: flex;
   align-items: flex-end;
@@ -1814,16 +1859,16 @@ html.js .verse__inner {
   background: currentColor;
   border-radius: 1px;
 }
-.music.is-on .music__bars i {
+.music.is-playing .music__bars i {
   animation: bar 1.1s var(--ease-drift) infinite alternate;
 }
-.music.is-on .music__bars i:nth-child(2) {
+.music.is-playing .music__bars i:nth-child(2) {
   animation-delay: -0.3s;
 }
-.music.is-on .music__bars i:nth-child(3) {
+.music.is-playing .music__bars i:nth-child(3) {
   animation-delay: -0.7s;
 }
-.music.is-on .music__bars i:nth-child(4) {
+.music.is-playing .music__bars i:nth-child(4) {
   animation-delay: -0.5s;
 }
 @keyframes bar {
@@ -1836,6 +1881,10 @@ html.js .verse__inner {
 @media (min-width: 900px) {
   :root {
     --gutter: max(40px, 4vw);
+  }
+  .theme-toggle {
+    top: 24px;
+    right: 24px;
   }
   .invite {
     grid-template-columns: 1fr minmax(auto, 1.25fr) 1fr;
@@ -1867,9 +1916,10 @@ html.js .verse__inner {
   }
   .invite__names {
     grid-area: names;
-    flex-direction: column;
     align-self: end;
-    font-size: clamp(5rem, 1rem + 8vw, 10rem);
+  }
+  .invite__name {
+    font-size: clamp(5rem, 1rem + 7vw, 9rem);
   }
   .invite__lines {
     grid-area: lines;
@@ -1913,13 +1963,11 @@ html.js .verse__inner {
   .milestone--right .milestone__media {
     justify-self: end;
   }
+  /* The story line passes behind each verse; a soft halo of page colour keeps it legible. */
   .story__paper .interlude {
     padding-left: 0.5rem;
-    background: var(--color-ivory);
     padding-block: 1.2rem;
-  }
-  html.js .story__paper .interlude {
-    background: radial-gradient(ellipse 60% 70% at 50% 50%, var(--color-ivory) 55%, transparent 100%);
+    background: radial-gradient(ellipse 60% 70% at 50% 50%, var(--bg) 55%, transparent 100%);
   }
 
   .chapter {
@@ -1969,12 +2017,12 @@ html.js .verse__inner {
     right: 8vw;
     bottom: 7svh;
     height: 1px;
-    background: var(--hair-paper);
+    background: var(--hair);
   }
   .chapter__progress i {
     display: block;
     height: 100%;
-    background: var(--color-gold-deep);
+    background: var(--accent);
     transform-origin: 0 50%;
   }
 
@@ -2092,11 +2140,15 @@ html.js .verse__inner {
   }
   .verse__rays span,
   .scroll-cue i,
-  .music.is-on .music__bars i {
+  .music.is-playing .music__bars i {
     animation: none;
   }
   .chapter__frame img {
     scale: 1;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
   }
   *,
   *::before,

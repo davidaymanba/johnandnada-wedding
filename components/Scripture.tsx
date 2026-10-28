@@ -7,7 +7,7 @@ import { Ornament } from "./Ornament";
 
 type Props = { verse: Verse | undefined; className?: string };
 
-/** A quiet scripture "breath" between chapters: ornament draws, lines rise slowly, Arabic follows. */
+/** A quiet scripture "breath" between chapters: ornament draws, lines rise slowly, the reference follows. */
 export function Scripture({ verse, className = "" }: Props) {
   const root = useRef<HTMLElement>(null);
 
@@ -28,7 +28,7 @@ export function Scripture({ verse, className = "" }: Props) {
             return t;
           },
         });
-        tl.from(q(".interlude__ref, .interlude__ar"), { autoAlpha: 0, y: 12, duration: 1.4, stagger: 0.2, ease: "drift" }, 1.1);
+        tl.from(q(".interlude__ref"), { autoAlpha: 0, y: 12, duration: 1.4, ease: "drift" }, 1.1);
       });
       return () => mm.revert();
     },
@@ -39,12 +39,9 @@ export function Scripture({ verse, className = "" }: Props) {
   return (
     <figure ref={root} className={`interlude ${className}`}>
       <Ornament />
-      <blockquote className="interlude__en">“{verse.en}”</blockquote>
+      <blockquote className="interlude__en">“{verse.text}”</blockquote>
       <figcaption>
-        <cite className="interlude__ref">{verse.refEn}</cite>
-        <p className="interlude__ar" lang="ar" dir="rtl">
-          «{verse.ar}» — {verse.refAr}
-        </p>
+        <cite className="interlude__ref">{verse.ref}</cite>
       </figcaption>
     </figure>
   );

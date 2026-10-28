@@ -160,7 +160,7 @@ export function Guestbook() {
   };
 
   return (
-    <section ref={root} id="guestbook" className="section guestbook" data-tone="paper" aria-labelledby="guestbook-title">
+    <section ref={root} id="guestbook" className="section guestbook" aria-labelledby="guestbook-title">
       <header className="guestbook__head">
         <p className="eyebrow">{gb.eyebrow}</p>
         <h2 id="guestbook-title" className="section-title">

@@ -5,7 +5,7 @@ import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
 import { lockScroll } from "@/lib/lenis";
 import { markIntroDone } from "@/lib/intro-state";
 import { playBell, playKnock, playSwell } from "@/lib/sound";
-import { site } from "@/content/site";
+import { fullNames, site } from "@/content/site";
 import { Monogram } from "./Monogram";
 
 const D = site.door;
@@ -335,7 +335,9 @@ export function Intro() {
       <div className="intro__title" aria-hidden="true">
         <p className="eyebrow">The wedding of</p>
         <p className="intro__names">
-          {site.names.bride} <span className="amp">&amp;</span> {site.names.groom}
+          <span>{fullNames.bride}</span>
+          <span className="amp">&amp;</span>
+          <span>{fullNames.groom}</span>
         </p>
       </div>
 

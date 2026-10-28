@@ -60,7 +60,7 @@ export function Memories() {
   }, []);
 
   return (
-    <section ref={root} id="memories" className="section memories" data-tone="night" aria-labelledby="memories-title">
+    <section ref={root} id="memories" className="section memories" aria-labelledby="memories-title">
       <header className="memories__head">
         <p className="eyebrow">{site.memories.eyebrow}</p>
         <h2 id="memories-title" className="section-title">
