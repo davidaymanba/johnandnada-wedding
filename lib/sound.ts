@@ -53,31 +53,6 @@ export function playKnock() {
   click.start(t);
 }
 
-/** A soft, distant bell as the doors open. */
-export function playBell(delay = 0) {
-  const a = audio();
-  if (!a) return;
-  const t = a.currentTime + delay;
-  const master = a.createGain();
-  master.gain.value = 0.16;
-  master.connect(a.destination);
-  const base = 392; // G4
-  [0.5, 1, 1.19, 1.56, 2, 2.51, 3.01].forEach((ratio, i) => {
-    const o = a.createOscillator();
-    const g = a.createGain();
-    o.type = "sine";
-    o.frequency.value = base * ratio;
-    const peak = 0.6 / (i + 1);
-    const decay = 4.2 / (1 + i * 0.45);
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(peak, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
-    o.connect(g).connect(master);
-    o.start(t);
-    o.stop(t + decay + 0.05);
-  });
-}
-
 /** Airy swell while the camera pushes through the doorway. */
 export function playSwell(duration = 2.4) {
   const a = audio();

@@ -26,6 +26,7 @@ export function ArchPhoto({ photo, sizes, className = "", outline = true }: Prop
             src={photo.src}
             alt={photo.alt}
             sizes={sizes}
+            quality={85}
             placeholder="blur"
             className="arch__img"
             style={{ objectPosition: photo.pos }}

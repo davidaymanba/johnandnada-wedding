@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { Flip, gsap, MQ, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { lockScroll } from "@/lib/lenis";
 import { site } from "@/content/site";
+import { Frame } from "./Frame";
 
 const photos = site.memories.photos;
 
@@ -28,14 +29,14 @@ export function Memories() {
         });
         const tiles = q(".tile");
         gsap.set(tiles, { clipPath: "inset(100% 0% 0% 0%)" });
-        gsap.set(q(".tile img"), { scale: 1.25 });
+        gsap.set(q(".tile .frame__reveal img"), { scale: 1.2 });
         ScrollTrigger.batch(tiles, {
           start: "top 88%",
           once: true,
           onEnter: (batch) => {
             gsap.to(batch, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.5, stagger: 0.12, ease: "door" });
             gsap.to(
-              batch.map((b) => b.querySelector("img")),
+              batch.map((b) => b.querySelector(".frame__reveal img")),
               { scale: 1, duration: 2, stagger: 0.12, ease: "reveal" },
             );
           },
@@ -47,7 +48,7 @@ export function Memories() {
   );
 
   const show = (i: number) => {
-    const img = thumbs.current[i]?.querySelector("img");
+    const img = thumbs.current[i]?.querySelector<HTMLElement>(".frame__reveal img");
     flip.current = img && !window.matchMedia(MQ.reduce).matches ? Flip.getState(img) : null;
     setOpen(i);
   };
@@ -69,16 +70,9 @@ export function Memories() {
       </header>
       <ul className="memories__grid">
         {photos.map((p, i) => (
-          <li key={p.alt} className={`tile tile--${i}`}>
+          <li key={p.alt} className="tile">
             <button ref={(el) => void (thumbs.current[i] = el)} type="button" className="tile__btn" onClick={() => show(i)} aria-label={`Open photo: ${p.alt}`}>
-              <Image
-                src={p.src}
-                alt={p.alt}
-                sizes="(min-width: 900px) 33vw, 50vw"
-                placeholder="blur"
-                style={{ objectPosition: p.pos }}
-                data-flip-id={`photo-${i}`}
-              />
+              <Frame photo={p} sizes="(min-width: 900px) 300px, 100vw" imgProps={{ "data-flip-id": `photo-${i}` }} />
             </button>
           </li>
         ))}
@@ -177,6 +171,7 @@ function Lightbox({
           className="lightbox__img"
           data-flip-id={`photo-${index}`}
           loading="eager"
+          quality={85}
           draggable={false}
         />
         <figcaption className="lightbox__ui lightbox__count">

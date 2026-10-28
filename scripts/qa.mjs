@@ -52,7 +52,13 @@ for (const vp of viewports) {
     await wait(3600);
     await page.screenshot({ path: `${out}/${theme}-${name}-02-door.png` });
     await page.click(".door__btn", { force: true });
-    for (const [i, t] of [600, 1300, 2000, 2700, 3400].entries()) {
+    await wait(1500);
+    const hymn = await page.evaluate(() => {
+      const a = document.querySelector('audio[data-music="hymn"]');
+      return a ? { playing: !a.paused, src: a.getAttribute("src") } : null;
+    });
+    console.log(`[${name}] hymn after knock:`, hymn);
+    for (const [i, t] of [1600, 1700, 2000, 2700, 3400].entries()) {
       await wait(i === 0 ? t : t - [600, 1300, 2000, 2700, 3400][i - 1]);
       await page.screenshot({ path: `${out}/${theme}-${name}-03-open-${i}.png` });
     }
@@ -92,7 +98,7 @@ for (const vp of viewports) {
     // Lightbox
     await page.evaluate(() => document.querySelector("#memories")?.scrollIntoView());
     await wait(2200);
-    await page.click(".tile--1 .tile__btn");
+    await page.locator(".tile__btn").nth(1).click();
     await wait(1200);
     await page.screenshot({ path: `${out}/${theme}-${name}-lightbox.png` });
     await page.keyboard.press("Escape");

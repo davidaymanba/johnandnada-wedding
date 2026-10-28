@@ -59,8 +59,11 @@ export const site = {
   /** Countdown "progress" runs from the engagement to the wedding */
   journeyStart: "2025-11-07T19:00:00+02:00",
 
-  /** Optional background music, e.g. "/media/music.mp3". null hides the toggle. */
-  music: null as string | null,
+  /** The hymn that starts when the church door opens ("The Blessing"). null = no music. */
+  music: "/media/the-blessing.m4a" as string | null,
+
+  /** Photo behind the opening verse (faces sit in the top 40% of the frame). */
+  versePhoto: p(whiteShirt, "John and Nada smiling together at night, holding hands", "50% 0%"),
 
   intro: {
     hint: "Knock to open",
@@ -178,6 +181,8 @@ export const site = {
   },
 
   closing: {
+    /** Photo behind the closing words. John's head is near the top edge, so it is never cropped from above. */
+    photo: p(theDay, "John and Nada standing together outside the church at night", "50% 0%"),
     line: "We can’t wait to celebrate with you.",
     signoff: "With love,",
     credit: { label: "Designed by Eng. David Ayman", href: "https://wa.me/201207809980" },

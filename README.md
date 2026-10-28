@@ -25,7 +25,8 @@ Everything lives in **`content/site.ts`**: names, date and time, venue, the **Go
 
 - **Maps link:** `site.event.mapsUrl` is currently a search for "The First Evangelical Church". Replace it with the exact link.
 - **Intro music:** the film's own soundtrack (`public/media/intro-audio.m4a`, made by `npm run media`). Phones only allow sound after a tap, so the intro shows an **"Open the invitation"** button once the monogram has drawn; the tap starts the film and its music together.
-- **Background music (optional):** put an mp3 in `public/media/` and set `site.music = "/media/your-track.mp3"`. A floating toggle appears after the door opens. `null` = no music.
+- **The hymn ("The Blessing"):** `public/media/the-blessing.m4a` starts automatically the moment the guest knocks and the church door opens (the knock is the tap that allows sound), fades in, and loops. A floating button (bottom right) pauses/plays it. To change it, replace the file or set `site.music`; `null` = no music.
+- **Photos:** every rectangular photo uses the same 3:4 frame. Portraits fill it; landscape photos are shown whole (nobody cropped out) over a soft blur of themselves. On phones photos run one per row, full width. The photos behind the opening verse and the closing are `site.versePhoto` and `site.closing.photo`.
 - **Order of names:** the groom is always first (John Michel & Nada Nassef); in the invitation the groom's portrait is on the left and the bride's on the right.
 - **Photos:** originals are in `../wedding-kit/assets`. `npm run media` re-creates `assets/photos/*` and the video/door files (needs `ffmpeg`). `next/image` serves AVIF/WebP at responsive sizes with blur placeholders automatically.
 - **Monogram (J & N):** `npm run monogram` rebuilds `content/monogram.ts` from the real Cormorant Garamond / Pinyon Script glyph outlines.

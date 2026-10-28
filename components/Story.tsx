@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Frame } from "./Frame";
 import { useRef } from "react";
 import { gsap, MQ, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { site, verseAt, type Photo } from "@/content/site";
@@ -26,11 +26,7 @@ function Milestone({ s, index, side }: { s: StepT; index: number; side: "left" |
       </div>
       {photo && (
         <div className="milestone__media">
-          <div className="frame">
-            <div className="frame__reveal">
-              <Image src={photo.src} alt={photo.alt} sizes="(min-width: 900px) 38vw, 86vw" placeholder="blur" style={{ objectPosition: photo.pos }} />
-            </div>
-          </div>
+          <Frame photo={photo} sizes="(min-width: 900px) 440px, 100vw" />
         </div>
       )}
     </article>
@@ -175,15 +171,15 @@ export function Story() {
           });
           q(".chapter__item").forEach((item, i) => {
             gsap.fromTo(
-              item.querySelector("img"),
-              { xPercent: -8 },
+              item.querySelector(".frame__reveal"),
+              { xPercent: -6 },
               {
-                xPercent: 8,
+                xPercent: 6,
                 ease: "none",
                 scrollTrigger: { trigger: item, containerAnimation: travel, start: "left right", end: "right left", scrub: true },
               },
             );
-            gsap.from(item.querySelector(".chapter__frame"), {
+            gsap.from(item.querySelector(".frame"), {
               clipPath: "inset(0% 0% 0% 100%)",
               duration: 1.4,
               ease: "door",
@@ -198,11 +194,10 @@ export function Story() {
           );
         } else {
           q(".chapter__item").forEach((item) => {
-            const frame = item.querySelector(".chapter__frame");
-            const img = item.querySelector("img");
+            const reveal = item.querySelector(".frame__reveal");
             const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 86%", once: true } });
-            tl.from(frame, { clipPath: "inset(100% 0% 0% 0%)", duration: 1.5, ease: "door" }).from(img, { scale: 1.35, duration: 2 }, 0);
-            gsap.fromTo(img, { yPercent: -5 }, { yPercent: 5, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } });
+            tl.from(reveal, { clipPath: "inset(100% 0% 0% 0%)", duration: 1.5, ease: "door" }).from(item.querySelector(".frame__reveal img"), { scale: 1.25, duration: 2 }, 0);
+            gsap.fromTo(reveal, { yPercent: -4 }, { yPercent: 4, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } });
           });
         }
         if (!desktop) {
@@ -269,7 +264,7 @@ export function Story() {
             <p className="milestone__body">{everyday.text}</p>
           </div>
           {(everyday as { photos: Photo[] }).photos.map((ph, i) => (
-            <ChapterItem key={ph.alt} photo={ph} variant={i} slot={`e${i}`} />
+            <ChapterItem key={ph.alt} photo={ph} />
           ))}
           <div className="chapter__panel chapter__panel--prep">
             <p className="milestone__num">06</p>
@@ -277,7 +272,7 @@ export function Story() {
             <p className="milestone__body">{prep.text}</p>
           </div>
           {(prep as { photos: Photo[] }).photos.map((ph, i) => (
-            <ChapterItem key={ph.alt} photo={ph} variant={i + 1} slot={`p${i}`} />
+            <ChapterItem key={ph.alt} photo={ph} />
           ))}
           <div className="chapter__spacer" aria-hidden="true" />
         </div>
@@ -316,12 +311,10 @@ export function Story() {
   );
 }
 
-function ChapterItem({ photo, variant, slot }: { photo: Photo; variant: number; slot: string }) {
+function ChapterItem({ photo }: { photo: Photo }) {
   return (
-    <figure className={`chapter__item chapter__item--${variant % 3} chapter__item--${slot}`}>
-      <div className="chapter__frame">
-        <Image src={photo.src} alt={photo.alt} sizes="(min-width: 900px) 30vw, 72vw" placeholder="blur" style={{ objectPosition: photo.pos }} />
-      </div>
+    <figure className="chapter__item">
+      <Frame photo={photo} sizes="(min-width: 900px) 40vw, 100vw" />
     </figure>
   );
 }

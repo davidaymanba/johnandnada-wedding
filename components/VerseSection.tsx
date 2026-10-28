@@ -3,7 +3,8 @@
 import { useRef } from "react";
 import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
 import { onIntroDone } from "@/lib/intro-state";
-import { verseAt } from "@/content/site";
+import { site, verseAt } from "@/content/site";
+import { HeroPhoto } from "./HeroPhoto";
 import { Ornament } from "./Ornament";
 
 const verse = verseAt("opening")!;
@@ -19,7 +20,9 @@ export function VerseSection() {
 
       mm.add(MQ.motion, () => {
         const tl = gsap.timeline({ paused: true });
-        tl.from(q(".verse__rays span"), { autoAlpha: 0, xPercent: -14, duration: 3, stagger: 0.3, ease: "drift" }, 0)
+        tl.from(q(".hero-photo"), { autoAlpha: 0, duration: 1.8, ease: "drift" }, 0)
+          .from(q(".hero-photo__img"), { scale: 1.08, duration: 3.2, ease: "reveal" }, 0)
+          .from(q(".verse__rays span"), { autoAlpha: 0, xPercent: -14, duration: 3, stagger: 0.3, ease: "drift" }, 0)
           .from(q(".verse .ornament path"), { drawSVG: "50% 50%", duration: 1.8, stagger: 0.1, ease: "drift" }, 0.2)
           .from(q(".verse__ref"), { autoAlpha: 0, letterSpacing: "0.7em", duration: 1.8, ease: "drift" }, 2.3)
           .from(q(".scroll-cue"), { autoAlpha: 0, y: -10, duration: 1.2 }, 3.2);
@@ -63,6 +66,7 @@ export function VerseSection() {
 
   return (
     <section ref={root} id="verse" className="section verse" aria-label="Opening verse">
+      <HeroPhoto photo={site.versePhoto} side="right" />
       <div className="verse__rays" aria-hidden="true">
         <span />
         <span />

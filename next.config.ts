@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   turbopack: { root: path.resolve(".") },
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [75, 85],
     deviceSizes: [390, 640, 828, 1080, 1440, 1920],
     imageSizes: [96, 160, 256, 384],
   },

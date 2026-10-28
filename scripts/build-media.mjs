@@ -55,6 +55,12 @@ for (const [h, rate] of [[1080, "3800k"], [720, "2000k"]]) {
 // past the last video frame (with a soft fade instead of a hard cut).
 ff("-i", video, "-vn", "-t", "10", "-af", "afade=t=out:st=9.2:d=0.8", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", path.join(mediaOut, "intro-audio.m4a"));
 
+// The hymn that starts when the door opens (streamed, so a lighter AAC is plenty).
+const hymn = path.resolve(root, "../Elevation_Worship_The_Blessing_Lyrics_ft_Kari_Jobe_Cody_CarnesMP3.mp3");
+if (fs.existsSync(hymn)) {
+  ff("-i", hymn, "-vn", "-map_metadata", "-1", "-c:a", "aac", "-b:a", "112k", "-ac", "2", "-movflags", "+faststart", path.join(mediaOut, "the-blessing.m4a"));
+}
+
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "nj-media-"));
 ff("-i", video, "-vf", "select=eq(n\\,221)", "-frames:v", "1", path.join(tmp, "door-src.png"));
 

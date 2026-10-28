@@ -5,6 +5,7 @@ import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
 import { fullNames, site, verseAt } from "@/content/site";
 import { Monogram } from "./Monogram";
 import { Scripture } from "./Scripture";
+import { HeroPhoto } from "./HeroPhoto";
 
 /** Bookend: the monogram draws itself again, as it did behind the door. */
 export function Closing() {
@@ -15,7 +16,18 @@ export function Closing() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
-        const tl = gsap.timeline({ scrollTrigger: { trigger: q(".closing__sign")[0], start: "top 80%", once: true } });
+        const tl = gsap.timeline({ scrollTrigger: { trigger: q(".closing__mark")[0], start: "top 85%", once: true } });
+        gsap.from(q(".closing .hero-photo"), {
+          autoAlpha: 0,
+          duration: 2,
+          ease: "drift",
+          scrollTrigger: { trigger: q(".closing__sign")[0], start: "top 85%", once: true },
+        });
+        gsap.from(q(".closing .hero-photo__img"), {
+          scale: 1.08,
+          duration: 3,
+          scrollTrigger: { trigger: q(".closing__sign")[0], start: "top 85%", once: true },
+        });
         tl.fromTo(
           q(".closing .monogram__line, .closing .monogram__glyph"),
           { drawSVG: "0%", fillOpacity: 0 },
@@ -48,6 +60,7 @@ export function Closing() {
     <footer ref={root} id="closing" className="section closing">
       <Scripture verse={verseAt("closing")} />
       <div className="closing__sign">
+        <HeroPhoto photo={site.closing.photo} side="left" />
         <div className="closing__mark">
           <span className="closing__glow" aria-hidden="true" />
           <Monogram className="closing__monogram" title={`${fullNames.groom} and ${fullNames.bride} monogram`} />

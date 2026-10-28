@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
 import { lockScroll } from "@/lib/lenis";
 import { markIntroDone } from "@/lib/intro-state";
-import { playBell, playKnock, playSwell } from "@/lib/sound";
+import { playKnock, playSwell } from "@/lib/sound";
+import { primeMusic, startMusic } from "@/lib/music";
 import { fullNames, site } from "@/content/site";
 import { Monogram } from "./Monogram";
 
@@ -158,6 +159,7 @@ export function Intro() {
     const q = gsap.utils.selector(root);
     fadeMusic(0.5);
     playKnock();
+    startMusic(); // the knock is a tap, so the hymn may start now
     try {
       navigator.vibrate?.(30);
     } catch {}
@@ -168,7 +170,6 @@ export function Intro() {
     }
 
     playSwell(3);
-    playBell(0.55);
     const g = geo.current;
     const vw = window.innerWidth;
     const desktop = window.matchMedia(MQ.desktop).matches;
@@ -256,6 +257,7 @@ export function Intro() {
   // Video and its music start together, inside the tap (that's what unlocks sound on phones).
   const begin = useCallback(() => {
     if (phaseRef.current !== "ready") return;
+    primeMusic();
     const v = video.current!;
     const a = music.current;
     if (a) {

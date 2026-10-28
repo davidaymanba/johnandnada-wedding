@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import Lenis from "lenis";
 import { gsap, MQ, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { smooth } from "@/lib/lenis";
+import { music, toggleMusic } from "@/lib/music";
 import { onIntroDone } from "@/lib/intro-state";
 import { site } from "@/content/site";
 
@@ -52,7 +53,7 @@ export function Experience({ children }: { children: ReactNode }) {
         <div ref={bar} className="progress__bar" />
       </div>
       <ThemeToggle visible={opened} />
-      {site.music && opened && <MusicToggle src={site.music} />}
+      {site.music && opened && <MusicToggle />}
       {children}
     </>
   );
@@ -98,34 +99,34 @@ function ThemeToggle({ visible }: { visible: boolean }) {
   );
 }
 
-function MusicToggle({ src }: { src: string }) {
-  const audio = useRef<HTMLAudioElement>(null);
+function MusicToggle() {
   const [on, setOn] = useState(false);
 
   useEffect(() => {
-    // The knock was a user gesture, so playback is allowed now.
-    const a = audio.current!;
-    a.volume = 0.5;
-    a.play().then(() => setOn(true)).catch(() => setOn(false));
+    const a = music();
+    if (!a) return;
+    const sync = () => setOn(!a.paused);
+    sync();
+    a.addEventListener("play", sync);
+    a.addEventListener("pause", sync);
+    return () => {
+      a.removeEventListener("play", sync);
+      a.removeEventListener("pause", sync);
+    };
   }, []);
 
-  const toggle = () => {
-    const a = audio.current!;
-    if (a.paused) a.play().then(() => setOn(true)).catch(() => {});
-    else {
-      a.pause();
-      setOn(false);
-    }
-  };
-
   return (
-    <>
-      <audio ref={audio} src={src} loop preload="auto" />
-      <button type="button" className={`fab music is-on ${on ? "is-playing" : ""}`} aria-pressed={on} aria-label={on ? "Pause music" : "Play music"} onClick={toggle}>
-        <span className="music__bars" aria-hidden="true">
-          <i /> <i /> <i /> <i />
-        </span>
-      </button>
-    </>
+    <button
+      type="button"
+      className={`fab music is-on ${on ? "is-playing" : ""}`}
+      aria-pressed={on}
+      aria-label={on ? "Pause the hymn" : "Play the hymn"}
+      title={on ? "Pause the hymn" : "Play the hymn"}
+      onClick={toggleMusic}
+    >
+      <span className="music__bars" aria-hidden="true">
+        <i /> <i /> <i /> <i />
+      </span>
+    </button>
   );
 }
