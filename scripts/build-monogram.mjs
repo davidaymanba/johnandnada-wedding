@@ -1,4 +1,4 @@
-// Builds the N & J monogram as real SVG outline paths (so DrawSVG can trace them).
+// Builds the J & N monogram (groom first) as real SVG outline paths (so DrawSVG can trace them).
 // Run: npm run monogram  → writes content/monogram.ts (add --preview for an SVG proof)
 import fs from "node:fs";
 import path from "node:path";
@@ -24,9 +24,9 @@ function glyph(font, ch, size, cx, baseline) {
   return font.getPath(ch, dx, baseline, size).toPathData(2);
 }
 
-const N = glyph(serif, "N", 100, 72, 152);
-const J = glyph(serif, "J", 100, 130, 196);
-const amp = glyph(script, "&", 60, 102, 182);
+const J = glyph(serif, "J", 100, 70, 150);
+const N = glyph(serif, "N", 100, 131, 200);
+const amp = glyph(script, "&", 58, 82, 214);
 
 // Gothic arch frame, echoing the church doors guests knock on.
 const arch = (inset) => {

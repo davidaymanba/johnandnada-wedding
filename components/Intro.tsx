@@ -21,7 +21,7 @@ const leftPath = `M0 ${D.h}V${springY}C0 ${springY * 0.54} ${leftW * 0.43} ${spr
 const rightPath = `M0 0C${rightW * 0.56} ${springY * 0.17} ${rightW} ${springY * 0.54} ${rightW} ${springY}V${D.h}H0Z`;
 const archPath = `M0 ${D.h}V${springY}C0 ${springY * 0.54} ${leftW * 0.43} ${springY * 0.17} ${leftW} 0C${leftW + rightW * 0.56} ${springY * 0.17} ${D.w} ${springY * 0.54} ${D.w} ${springY}V${D.h}Z`;
 
-type Phase = "loading" | "blocked" | "playing" | "door" | "opening" | "gone";
+type Phase = "loading" | "ready" | "playing" | "door" | "opening" | "gone";
 
 /** object-fit: cover, but horizontally biased so the door sits in the middle of narrow screens. */
 function fit(vw: number, vh: number) {
@@ -34,6 +34,7 @@ function fit(vw: number, vh: number) {
 export function Intro() {
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  const music = useRef<HTMLAudioElement>(null);
   const [phase, setPhase] = useState<Phase>("loading");
   const phaseRef = useRef<Phase>("loading");
   const geo = useRef(fit(1440, 900));
@@ -89,11 +90,19 @@ export function Intro() {
     go("gone");
   }, [go]);
 
+  /** Let the film's music ring out softly (iOS ignores volume, so it simply plays to its own fade). */
+  const fadeMusic = useCallback((duration: number) => {
+    const a = music.current;
+    if (!a || a.paused) return;
+    gsap.to(a, { volume: 0, duration, ease: "none", onComplete: () => a.pause() });
+  }, []);
+
   // ── door ready: light behind the seam, hint, ring ─────────────────────────────────
   const toDoor = useCallback(
     (instant: boolean) => {
       if (phaseRef.current === "door" || phaseRef.current === "opening" || phaseRef.current === "gone") return;
       go("door");
+      if (!instant) fadeMusic(1.2);
       const q = gsap.utils.selector(root);
       const v = video.current;
       gsap.to(q(".intro__preload"), { autoAlpha: 0, duration: 0.6, overwrite: true });
@@ -139,7 +148,7 @@ export function Intro() {
       }
       q<HTMLButtonElement>(".door__btn")[0]?.focus({ preventScroll: true });
     },
-    [go],
+    [go, fadeMusic],
   );
 
   // ── the knock ─────────────────────────────────────────────────────────────────────
@@ -147,6 +156,7 @@ export function Intro() {
     if (phaseRef.current !== "door") return;
     go("opening");
     const q = gsap.utils.selector(root);
+    fadeMusic(0.5);
     playKnock();
     try {
       navigator.vibrate?.(30);
@@ -182,7 +192,7 @@ export function Intro() {
       .to(q(".intro__camera"), desktop ? { filter: "blur(6px)", duration: 0.9, ease: "power2.in" } : { duration: 0 }, 2.45)
       .to(q(".intro__bloom"), { autoAlpha: 1, duration: 1, ease: "power2.in" }, 2.3)
       .to(root.current, { autoAlpha: 0, duration: 0.9, ease: "drift" }, 3.35);
-  }, [finish, go]);
+  }, [finish, go, fadeMusic]);
 
   // ── preloader → video → door ──────────────────────────────────────────────────────
   useGSAP(
@@ -220,13 +230,9 @@ export function Intro() {
       Promise.all([ready, draw.then()]).then(async () => {
         if (cancelled) return;
         await gsap.to(glyphs, { fillOpacity: 1, strokeOpacity: 0, duration: 0.7, stagger: 0.08, ease: "drift" }).then();
-        try {
-          await v.play();
-        } catch {
-          go("blocked");
-          return;
-        }
-        start();
+        if (cancelled) return;
+        // Sound needs a tap, so the guest opens the invitation themselves.
+        go("ready");
       });
 
       return () => {
@@ -238,6 +244,7 @@ export function Intro() {
   );
 
   const start = useCallback(() => {
+    if (phaseRef.current !== "ready") return;
     const q = gsap.utils.selector(root);
     go("playing");
     gsap.to(q(".intro__preload"), { autoAlpha: 0, scale: 1.04, duration: 1.1, ease: "drift" });
@@ -246,14 +253,27 @@ export function Intro() {
     gsap.delayedCall(16, () => toDoor(false));
   }, [go, toDoor]);
 
-  const tapToBegin = useCallback(async () => {
-    try {
-      await video.current?.play();
-      start();
-    } catch {
-      toDoor(false);
+  // Video and its music start together, inside the tap (that's what unlocks sound on phones).
+  const begin = useCallback(() => {
+    if (phaseRef.current !== "ready") return;
+    const v = video.current!;
+    const a = music.current;
+    if (a) {
+      a.currentTime = 0;
+      a.volume = 1;
+      a.play().catch(() => {});
     }
-  }, [start, toDoor]);
+    v.play()
+      .then(start)
+      .catch(() => {
+        go("playing");
+        toDoor(false);
+      });
+  }, [go, start, toDoor]);
+
+  useEffect(() => {
+    if (phase === "ready") root.current?.querySelector<HTMLButtonElement>(".intro__begin")?.focus({ preventScroll: true });
+  }, [phase]);
 
   useEffect(() => {
     if (skipped) return;
@@ -295,6 +315,7 @@ export function Intro() {
             <source src="/media/intro-1080.mp4" type="video/mp4" media="(min-width: 1000px)" />
             <source src="/media/intro-720.mp4" type="video/mp4" />
           </video>
+          <audio ref={music} src="/media/intro-audio.m4a" preload="auto" aria-hidden="true" />
           <picture className="intro__still" aria-hidden="true">
             <source type="image/avif" srcSet="/media/door-1280.avif 1280w, /media/door-1920.avif 1920w" sizes="1920px" />
             <source type="image/webp" srcSet="/media/door-1280.webp 1280w, /media/door-1920.webp 1920w" sizes="1920px" />
@@ -335,9 +356,9 @@ export function Intro() {
       <div className="intro__title" aria-hidden="true">
         <p className="eyebrow">The wedding of</p>
         <p className="intro__names">
-          <span>{fullNames.bride}</span>
-          <span className="amp">&amp;</span>
           <span>{fullNames.groom}</span>
+          <span className="amp">&amp;</span>
+          <span>{fullNames.bride}</span>
         </p>
       </div>
 
@@ -351,13 +372,22 @@ export function Intro() {
         <span className="intro__hint-text">{site.intro.hint}</span>
       </p>
 
-      <div className="intro__preload" aria-hidden={phase !== "blocked"}>
+      <div className="intro__preload">
         <Monogram className="intro__monogram" />
         <p className="intro__preload-date">11 · 11 · 2026</p>
-        {phase === "blocked" && (
-          <button type="button" className="btn btn--ghost intro__begin" onClick={tapToBegin}>
-            {site.intro.tapToBegin}
-          </button>
+        {phase === "ready" && (
+          <div className="intro__begin-wrap">
+            <button type="button" className="btn intro__begin" onClick={begin}>
+              {site.intro.begin}
+            </button>
+            <p className="intro__sound" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z" />
+                <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />
+              </svg>
+              {site.intro.sound}
+            </p>
+          </div>
         )}
       </div>
 

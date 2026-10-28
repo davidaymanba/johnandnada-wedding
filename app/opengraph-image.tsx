@@ -4,7 +4,7 @@ import { ImageResponse } from "next/og";
 import { monogram as m } from "@/content/monogram";
 import { fullNames, site } from "@/content/site";
 
-export const alt = "Nada Nassef & John Michel — Wedding Invitation · Wednesday, November 11, 2026";
+export const alt = "John Michel & Nada Nassef — Wedding Invitation · Wednesday, November 11, 2026";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -32,15 +32,15 @@ export default async function OG() {
             <path d={m.outer} fill="none" stroke={gold} strokeWidth="2" />
             <path d={m.inner} fill="none" stroke={gold} strokeWidth="1" />
             <path d={m.cross} fill="none" stroke={gold} strokeWidth="2" />
-            <path d={m.N} fill="#F0EEE9" />
             <path d={m.J} fill="#F0EEE9" />
+            <path d={m.N} fill="#F0EEE9" />
             <path d={m.amp} fill={gold} />
           </svg>
           <div style={{ marginTop: 16, fontSize: 18, letterSpacing: 7, color: gold, fontFamily: "Serif", textTransform: "uppercase" }}>You are invited</div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 10, fontFamily: "Serif", fontSize: 76, lineHeight: 1 }}>
-            <span>{fullNames.bride}</span>
-            <span style={{ fontFamily: "Script", color: gold, fontSize: 96, lineHeight: 1, margin: "-10px 0 -14px" }}>&amp;</span>
             <span>{fullNames.groom}</span>
+            <span style={{ fontFamily: "Script", color: gold, fontSize: 96, lineHeight: 1, margin: "-10px 0 -14px" }}>&amp;</span>
+            <span>{fullNames.bride}</span>
           </div>
           <div style={{ width: 220, height: 1, background: gold, opacity: 0.7, margin: "20px 0 18px" }} />
           <div style={{ fontFamily: "Italic", fontSize: 34 }}>Wednesday, November 11, 2026 · 7:00 PM</div>

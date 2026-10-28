@@ -6,7 +6,7 @@ export function GET() {
   return new Response(icsFile(), {
     headers: {
       "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": 'attachment; filename="nada-and-john-wedding.ics"',
+      "Content-Disposition": 'attachment; filename="john-and-nada-wedding.ics"',
     },
   });
 }

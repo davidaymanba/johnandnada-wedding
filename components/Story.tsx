@@ -155,7 +155,8 @@ export function Story() {
           }
         });
 
-        // Chapter: "every day" + "preparations". Pinned horizontal travel on desktop, native swipe on mobile.
+        // Chapter: "every day" + "preparations". Pinned horizontal travel on desktop; on phones the photos
+        // simply continue down the page, each one opening as it arrives.
         const chapter = q(".chapter")[0] as HTMLElement;
         const rail = q(".chapter__rail")[0] as HTMLElement;
         if (desktop) {
@@ -196,12 +197,12 @@ export function Story() {
             { scaleX: 1, ease: "none", scrollTrigger: { trigger: chapter, start: "top top", end: () => `+=${distance()}`, scrub: true } },
           );
         } else {
-          gsap.from(q(".chapter__item"), {
-            autoAlpha: 0,
-            x: 40,
-            stagger: 0.1,
-            duration: 1.2,
-            scrollTrigger: { trigger: chapter, start: "top 70%", once: true },
+          q(".chapter__item").forEach((item) => {
+            const frame = item.querySelector(".chapter__frame");
+            const img = item.querySelector("img");
+            const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 86%", once: true } });
+            tl.from(frame, { clipPath: "inset(100% 0% 0% 0%)", duration: 1.5, ease: "door" }).from(img, { scale: 1.35, duration: 2 }, 0);
+            gsap.fromTo(img, { yPercent: -5 }, { yPercent: 5, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } });
           });
         }
         if (!desktop) {
@@ -268,7 +269,7 @@ export function Story() {
             <p className="milestone__body">{everyday.text}</p>
           </div>
           {(everyday as { photos: Photo[] }).photos.map((ph, i) => (
-            <ChapterItem key={ph.alt} photo={ph} variant={i} />
+            <ChapterItem key={ph.alt} photo={ph} variant={i} slot={`e${i}`} />
           ))}
           <div className="chapter__panel chapter__panel--prep">
             <p className="milestone__num">06</p>
@@ -276,7 +277,7 @@ export function Story() {
             <p className="milestone__body">{prep.text}</p>
           </div>
           {(prep as { photos: Photo[] }).photos.map((ph, i) => (
-            <ChapterItem key={ph.alt} photo={ph} variant={i + 1} />
+            <ChapterItem key={ph.alt} photo={ph} variant={i + 1} slot={`p${i}`} />
           ))}
           <div className="chapter__spacer" aria-hidden="true" />
         </div>
@@ -315,9 +316,9 @@ export function Story() {
   );
 }
 
-function ChapterItem({ photo, variant }: { photo: Photo; variant: number }) {
+function ChapterItem({ photo, variant, slot }: { photo: Photo; variant: number; slot: string }) {
   return (
-    <figure className={`chapter__item chapter__item--${variant % 3}`}>
+    <figure className={`chapter__item chapter__item--${variant % 3} chapter__item--${slot}`}>
       <div className="chapter__frame">
         <Image src={photo.src} alt={photo.alt} sizes="(min-width: 900px) 30vw, 72vw" placeholder="blur" style={{ objectPosition: photo.pos }} />
       </div>

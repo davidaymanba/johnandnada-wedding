@@ -51,6 +51,10 @@ for (const [h, rate] of [[1080, "3800k"], [720, "2000k"]]) {
   const w = (h * 16) / 9;
   ff("-i", video, "-frames:v", "222", "-an", "-vf", `scale=${w}:${h}`, ...h264, "-b:v", rate, path.join(mediaOut, `intro-${h}.mp4`));
 }
+// The film's own music, as a separate file: it starts on the guest's tap and is allowed to ring out
+// past the last video frame (with a soft fade instead of a hard cut).
+ff("-i", video, "-vn", "-t", "10", "-af", "afade=t=out:st=9.2:d=0.8", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", path.join(mediaOut, "intro-audio.m4a"));
+
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "nj-media-"));
 ff("-i", video, "-vf", "select=eq(n\\,221)", "-frames:v", "1", path.join(tmp, "door-src.png"));
 

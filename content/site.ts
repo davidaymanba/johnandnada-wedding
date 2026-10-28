@@ -33,14 +33,15 @@ export type Photo = {
 const p = (src: StaticImageData, alt: string, pos = "50% 40%"): Photo => ({ src, alt, pos });
 
 export const site = {
+  /** The groom is always named first. */
   names: {
-    bride: "Nada",
-    brideSurname: "Nassef",
     groom: "John",
     groomSurname: "Michel",
+    bride: "Nada",
+    brideSurname: "Nassef",
   },
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://nada-and-john.vercel.app",
-  title: "Nada Nassef & John Michel — Wedding Invitation",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://john-and-nada.vercel.app",
+  title: "John Michel & Nada Nassef — Wedding Invitation",
   description: "Wednesday, November 11, 2026 · 7:00 PM · The First Evangelical Church",
 
   event: {
@@ -64,14 +65,15 @@ export const site = {
   intro: {
     hint: "Knock to open",
     skip: "Skip",
-    tapToBegin: "Tap to begin",
+    begin: "Open the invitation",
+    sound: "Best with sound on",
   },
 
   invitation: {
     eyebrow: "Together with their families",
     lines: ["With hearts full of gratitude to God,", "we joyfully invite you to celebrate our wedding."],
-    bride: p(nada, "Nada, smiling, standing on a balcony in a white dress and denim vest", "50% 22%"),
     groom: p(john, "John in a beige blazer and white shirt, smiling", "50% 18%"),
+    bride: p(nada, "Nada, smiling, standing on a balcony in a white dress and denim vest", "50% 22%"),
   },
 
   details: {
@@ -153,8 +155,8 @@ export const site = {
     title: "Leave us a blessing",
     intro: "A prayer, a wish, a memory — we will keep every word.",
     relations: [
-      { value: "bride", label: "Bride’s side" },
       { value: "groom", label: "Groom’s side" },
+      { value: "bride", label: "Bride’s side" },
       { value: "family", label: "Family" },
     ],
     empty: "Be the first to leave a blessing.",
@@ -248,6 +250,6 @@ export const verses: Verse[] = [
 export const verseAt = (placement: VersePlacement) => verses.find((v) => v.placement === placement);
 
 export const fullNames = {
-  bride: `${site.names.bride} ${site.names.brideSurname}`,
   groom: `${site.names.groom} ${site.names.groomSurname}`,
+  bride: `${site.names.bride} ${site.names.brideSurname}`,
 };

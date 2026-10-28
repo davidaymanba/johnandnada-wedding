@@ -11,16 +11,16 @@ The page is one continuous theme: all navy (default) or all light, chosen by the
 - Section set: monogram, verse, portraits, details, story, countdown, gallery, closing + credit.
 
 ## What v2 does differently
-1. The monogram is built from real glyph outlines inside a gothic arch with a small cross, so it can draw itself (preloader and closing bookend).
+1. The J & N monogram (groom first) is built from real glyph outlines inside a gothic arch with a small cross, so it can draw itself (preloader and closing bookend).
 2. The intro is one master timeline: the film hands off pixel-identically to the door still (same frame 221), real door leaves cut from that frame swing inward in 3D, light floods out, and the camera pushes through.
-3. One knock (Web Audio knock + distant bell + air swell, no audio files), with haptic feedback.
+3. "Open the invitation" starts the film together with its own soundtrack (a tap is what unlocks sound on phones). One knock (Web Audio knock + distant bell + air swell), with haptic feedback.
 4. A strict type scale with fluid `clamp()` sizes; lining numerals for dates and digits.
 5. A consistent easing language: three custom curves (`reveal`, `door`, `drift`) used everywhere.
 6. Text reveals rise from masks (SplitText lines/words/chars) instead of generic fade-ups.
 7. Photos reveal with clip-path wipes plus inner parallax; faces are protected with per-photo `object-position`.
 8. The story is a real timeline: a waving gold path draws with the scroll, and nodes light up as it reaches them.
 9. Scripture interludes (KJV) are quiet breaths between chapters, not cards.
-10. Desktop: a pinned horizontal chapter for "every day" and "preparations"; mobile: a native snap strip.
+10. Desktop: a pinned horizontal chapter for "every day" and "preparations"; phones: an editorial column that keeps scrolling down (no sideways swiping), each photo opening as it arrives.
 11. The wedding day opens like the door did (the arch photo wipes open from the centre), then flows into the countdown.
 12. The countdown digits are rolling columns (never re-rendered); a journey line shows progress from the engagement to the altar; announcements are once a minute.
 13. Guestbook: underline-draw fields, an optimistic card that flies from the form into the wall (Flip), rate limiting, and proper empty and error states.

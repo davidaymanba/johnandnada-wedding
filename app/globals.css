@@ -640,8 +640,49 @@ html.js .intro__preload {
   letter-spacing: 0.38em;
   color: var(--color-gold);
 }
+.intro__begin-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  margin-top: 1.2rem;
+  animation: rise 1.1s var(--ease-reveal) both;
+}
 .intro__begin {
-  margin-top: 0.6rem;
+  min-width: 15rem;
+  border-color: rgb(200 169 106 / 0.55);
+  box-shadow: 0 0 0 0 rgb(200 169 106 / 0.35);
+  animation: breathe 2.8s var(--ease-drift) 1.2s infinite;
+}
+.intro__sound {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.intro__sound svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: var(--color-gold);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+@keyframes breathe {
+  50% {
+    box-shadow: 0 0 0 10px rgb(200 169 106 / 0);
+  }
 }
 .intro__skip {
   position: absolute;
@@ -868,7 +909,7 @@ html.js .verse__inner {
 .invite__portrait {
   margin: 0;
 }
-.invite__portrait--groom {
+.invite__portrait--right {
   margin-top: clamp(2.5rem, 9vw, 7rem);
 }
 .invite__role {
@@ -1203,35 +1244,29 @@ html.js .verse__inner {
   padding-left: 0.5rem;
 }
 
-/* Chapter: every day + preparations */
+/* Chapter: every day + preparations.
+   Phones: an editorial column that keeps going down (no sideways swiping). */
 .chapter {
   position: relative;
   padding: 0 0 clamp(4rem, 10vw, 7rem);
   overflow: hidden;
 }
 .chapter__rail {
-  display: flex;
-  gap: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
   padding: 0 var(--gutter);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  scroll-padding-inline: var(--gutter);
-  overscroll-behavior-x: contain;
-}
-.chapter__rail::-webkit-scrollbar {
-  display: none;
 }
 .chapter__panel {
-  flex: 0 0 82vw;
-  scroll-snap-align: start;
-  align-self: center;
-  padding-right: 1rem;
+  grid-column: 1 / -1;
+  padding: 0 0 1.4rem;
+}
+.chapter__panel--prep {
+  padding-top: clamp(3.5rem, 12vw, 5rem);
 }
 .chapter__item {
-  flex: 0 0 72vw;
   margin: 0;
-  scroll-snap-align: center;
+  grid-column: 1 / -1;
 }
 .chapter__frame {
   position: relative;
@@ -1239,12 +1274,37 @@ html.js .verse__inner {
   aspect-ratio: 4 / 5;
   border-radius: 2px;
   clip-path: inset(0% 0% 0% 0%);
+  background: var(--faint);
 }
 .chapter__frame img {
   scale: 1.18;
 }
+/* every day: big · two side by side (staggered) · big */
+.chapter__item--e1,
+.chapter__item--e2 {
+  grid-column: span 1;
+}
+.chapter__item--e1 .chapter__frame,
+.chapter__item--e2 .chapter__frame {
+  aspect-ratio: 3 / 4.2;
+}
+.chapter__item--e2 {
+  margin-top: 2.6rem;
+}
+.chapter__item--e3 {
+  width: 84%;
+  justify-self: end;
+  margin-top: -1.4rem;
+}
+/* preparations: wide · inset portrait */
+.chapter__item--p0 .chapter__frame {
+  aspect-ratio: 4 / 3;
+}
+.chapter__item--p1 {
+  width: 78%;
+}
 .chapter__spacer {
-  flex: 0 0 1px;
+  display: none;
 }
 .chapter__progress {
   display: none;
@@ -1890,8 +1950,8 @@ html.js .verse__inner {
     grid-template-columns: 1fr minmax(auto, 1.25fr) 1fr;
     grid-template-areas:
       "eyebrow eyebrow eyebrow"
-      "bride names groom"
-      "bride lines groom";
+      "left names right"
+      "left lines right";
     align-items: center;
     column-gap: clamp(2rem, 4vw, 4rem);
     max-width: 1440px;
@@ -1905,12 +1965,14 @@ html.js .verse__inner {
     display: contents;
   }
   .invite__portrait {
-    grid-area: bride;
     width: min(100%, 340px);
+  }
+  .invite__portrait--left {
+    grid-area: left;
     justify-self: end;
   }
-  .invite__portrait--groom {
-    grid-area: groom;
+  .invite__portrait--right {
+    grid-area: right;
     justify-self: start;
     margin-top: 9rem;
   }
@@ -1977,6 +2039,7 @@ html.js .verse__inner {
     align-items: center;
   }
   .chapter__rail {
+    display: flex;
     align-items: center;
     gap: clamp(2rem, 3vw, 3.5rem);
     padding: 0 8vw;
@@ -1985,14 +2048,22 @@ html.js .verse__inner {
   }
   .chapter__panel {
     flex: 0 0 min(32vw, 460px);
+    padding: 0 1rem 0 0;
   }
   .chapter__panel--prep {
     margin-left: 6vw;
   }
-  .chapter__item {
+  .chapter__item,
+  .chapter__item--e3,
+  .chapter__item--p1 {
     flex: 0 0 auto;
+    width: auto;
     height: 62svh;
     aspect-ratio: 4 / 5;
+    margin: 0;
+  }
+  .chapter__item .chapter__frame {
+    aspect-ratio: auto;
   }
   .chapter__item--1 {
     height: 48svh;
@@ -2008,7 +2079,8 @@ html.js .verse__inner {
     height: 100%;
   }
   .chapter__spacer {
-    flex-basis: 4vw;
+    display: block;
+    flex: 0 0 4vw;
   }
   .chapter__progress {
     display: block;
@@ -2140,6 +2212,8 @@ html.js .verse__inner {
   }
   .verse__rays span,
   .scroll-cue i,
+  .intro__begin-wrap,
+  .intro__begin,
   .music.is-playing .music__bars i {
     animation: none;
   }

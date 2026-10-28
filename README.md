@@ -1,4 +1,4 @@
-# Nada & John — Wedding Invitation
+# John Michel & Nada Nassef — Wedding Invitation
 
 Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · GSAP 3.15 (ScrollTrigger, SplitText, DrawSVG, Flip, CustomEase) · Lenis · Supabase.
 
@@ -24,9 +24,11 @@ The door intro plays once per browser session (`sessionStorage`). Open a new tab
 Everything lives in **`content/site.ts`**: names, date and time, venue, the **Google Maps link**, story steps, photos (with `pos` = CSS `object-position` so faces stay in frame), gallery, guestbook copy, closing, music, and the `verses` array (each verse has `placement`, `text` (KJV) and `ref` — move or delete freely). Full names live in `site.names` (`brideSurname`, `groomSurname`).
 
 - **Maps link:** `site.event.mapsUrl` is currently a search for "The First Evangelical Church". Replace it with the exact link.
-- **Music:** put an mp3 in `public/media/` and set `site.music = "/media/your-track.mp3"`. A floating toggle appears after the door opens. `null` = no music.
+- **Intro music:** the film's own soundtrack (`public/media/intro-audio.m4a`, made by `npm run media`). Phones only allow sound after a tap, so the intro shows an **"Open the invitation"** button once the monogram has drawn; the tap starts the film and its music together.
+- **Background music (optional):** put an mp3 in `public/media/` and set `site.music = "/media/your-track.mp3"`. A floating toggle appears after the door opens. `null` = no music.
+- **Order of names:** the groom is always first (John Michel & Nada Nassef); in the invitation the groom's portrait is on the left and the bride's on the right.
 - **Photos:** originals are in `../wedding-kit/assets`. `npm run media` re-creates `assets/photos/*` and the video/door files (needs `ffmpeg`). `next/image` serves AVIF/WebP at responsive sizes with blur placeholders automatically.
-- **Monogram:** `npm run monogram` rebuilds `content/monogram.ts` from the real Cormorant Garamond / Pinyon Script glyph outlines.
+- **Monogram (J & N):** `npm run monogram` rebuilds `content/monogram.ts` from the real Cormorant Garamond / Pinyon Script glyph outlines.
 
 ## Theme
 

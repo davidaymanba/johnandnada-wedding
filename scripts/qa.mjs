@@ -35,7 +35,18 @@ for (const vp of viewports) {
     await page.goto(base, { waitUntil: "domcontentloaded" });
     await wait(1200);
     await page.screenshot({ path: `${out}/${theme}-${name}-00-preloader.png` });
-    await wait(3200);
+    await page.waitForSelector(".intro__begin", { timeout: 20000 });
+    await wait(1200);
+    await page.screenshot({ path: `${out}/${theme}-${name}-01a-ready.png` });
+    const music = await page.evaluate(() => document.querySelector("audio")?.getAttribute("src"));
+    await page.click(".intro__begin");
+    await wait(600);
+    const playing = await page.evaluate(() => {
+      const a = document.querySelector(".intro audio");
+      return a ? !a.paused : false;
+    });
+    console.log(`[${name}] music ${music} playing after tap: ${playing}`);
+    await wait(2600);
     await page.screenshot({ path: `${out}/${theme}-${name}-01-video.png` });
     await page.waitForSelector('.intro[data-phase="door"]', { timeout: 30000 });
     await wait(3600);

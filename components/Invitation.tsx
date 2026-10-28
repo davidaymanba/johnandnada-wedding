@@ -75,26 +75,27 @@ export function Invitation() {
     <section ref={root} id="invitation" className="section invite" aria-labelledby="invite-title">
       <p className="eyebrow invite__eyebrow">{inv.eyebrow}</p>
       <div className="invite__portraits">
-        <figure className="invite__portrait">
-          <ArchPhoto photo={inv.bride} sizes="(min-width: 900px) 26vw, 44vw" />
-          <figcaption className="invite__role">The bride</figcaption>
-        </figure>
-        <figure className="invite__portrait invite__portrait--groom">
+        {/* Groom on the guest's left, bride on the right. */}
+        <figure className="invite__portrait invite__portrait--left">
           <ArchPhoto photo={inv.groom} sizes="(min-width: 900px) 26vw, 44vw" />
           <figcaption className="invite__role">The groom</figcaption>
+        </figure>
+        <figure className="invite__portrait invite__portrait--right">
+          <ArchPhoto photo={inv.bride} sizes="(min-width: 900px) 26vw, 44vw" />
+          <figcaption className="invite__role">The bride</figcaption>
         </figure>
       </div>
       <h2 id="invite-title" className="invite__names">
         <span className="invite__person">
-          <span className="invite__name">{site.names.bride}</span>
-          <span className="invite__surname">{site.names.brideSurname}</span>
+          <span className="invite__name">{site.names.groom}</span>
+          <span className="invite__surname">{site.names.groomSurname}</span>
         </span>
         <svg className="invite__amp" viewBox={monogram.ampSolo.viewBox} role="img" aria-label="and">
           <path d={monogram.ampSolo.d} />
         </svg>
         <span className="invite__person">
-          <span className="invite__name">{site.names.groom}</span>
-          <span className="invite__surname">{site.names.groomSurname}</span>
+          <span className="invite__name">{site.names.bride}</span>
+          <span className="invite__surname">{site.names.brideSurname}</span>
         </span>
       </h2>
       <p className="invite__lines">

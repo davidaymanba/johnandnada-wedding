@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: site.title,
   description: site.description,
-  openGraph: { title: site.title, description: site.description, type: "website", url: "/", siteName: "Nada Nassef & John Michel" },
+  openGraph: { title: site.title, description: site.description, type: "website", url: "/", siteName: "John Michel & Nada Nassef" },
   twitter: { card: "summary_large_image", title: site.title, description: site.description },
 };
 

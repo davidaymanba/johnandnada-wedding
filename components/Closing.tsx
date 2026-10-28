@@ -50,15 +50,15 @@ export function Closing() {
       <div className="closing__sign">
         <div className="closing__mark">
           <span className="closing__glow" aria-hidden="true" />
-          <Monogram className="closing__monogram" title={`${fullNames.bride} and ${fullNames.groom} monogram`} />
+          <Monogram className="closing__monogram" title={`${fullNames.groom} and ${fullNames.bride} monogram`} />
         </div>
         <p className="closing__line">{site.closing.line}</p>
         <p className="closing__signoff">
           <span className="closing__with">{site.closing.signoff}</span>
           <span className="closing__names">
-            <span>{fullNames.bride}</span>
-            <span className="amp">&amp;</span>
             <span>{fullNames.groom}</span>
+            <span className="amp">&amp;</span>
+            <span>{fullNames.bride}</span>
           </span>
           <span className="closing__date">11 · 11 · 2026</span>
         </p>
