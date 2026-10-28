@@ -40,7 +40,7 @@ export const site = {
     bride: "Nada",
     brideSurname: "Nassef",
   },
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://john-and-nada.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://johnandnada.codexai.systems",
   title: "John Michel & Nada Nassef — Wedding Invitation",
   description: "Wednesday, November 11, 2026 · 7:00 PM · The First Evangelical Church",
 
