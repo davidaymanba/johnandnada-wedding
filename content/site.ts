@@ -19,6 +19,17 @@ import whiteShirt from "@/assets/photos/white-shirt.jpg";
 import woodWall from "@/assets/photos/wood-wall.jpg";
 import friendsFour from "@/assets/photos/friends-four.jpg";
 import friendsDinner from "@/assets/photos/friends-dinner.jpg";
+import firstPhoto from "@/assets/photos/first-photo.jpg";
+import nileBoat from "@/assets/photos/nile-boat.jpg";
+import graduationHug from "@/assets/photos/graduation-hug.jpg";
+import graduationFaculty from "@/assets/photos/graduation-faculty.jpg";
+import busTrip from "@/assets/photos/bus-trip.jpg";
+import engagementTrio from "@/assets/photos/engagement-trio.jpg";
+import engagementFamily from "@/assets/photos/engagement-family.jpg";
+import engagementFamily2 from "@/assets/photos/engagement-family-2.jpg";
+import engagementSelfie from "@/assets/photos/engagement-selfie.jpg";
+import neonWings from "@/assets/photos/neon-wings.jpg";
+import christmasTree from "@/assets/photos/christmas-tree.jpg";
 
 export type Photo = {
   src: StaticImageData;
@@ -92,12 +103,14 @@ export const site = {
         date: "May 25, 2025",
         title: "Where it all began",
         text: "The beginning of prayers, long conversations, and many questions — to the Lord and to each other.",
+        photo: p(firstPhoto, "The first photo of Nada and John together, smiling side by side", "50% 50%"),
       },
       {
         id: "walking",
         date: null,
         title: "Choosing to keep walking",
         text: "After months of thinking and praying, and watching the Lord lead every detail, we decided to keep walking together — following Him.",
+        photo: p(nileBoat, "John and Nada smiling on a boat on the Nile", "50% 50%"),
       },
       {
         id: "proposal",
@@ -110,7 +123,7 @@ export const site = {
         id: "engagement",
         date: "November 7, 2025",
         title: "Our engagement",
-        text: "A day we declared before the Lord and everyone we love that we choose to be two vessels, open to all He wants to do in us and through us, together.",
+        text: "A day we declared before the Lord and everyone we love that we choose to be two vessels, available to all He wants to do in us and through us, together.",
         photo: p(engagement, "Nada in a royal-blue dress holding blue roses beside John on their engagement day", "50% 20%"),
       },
       {
@@ -120,6 +133,8 @@ export const site = {
         text: "Every day we walk together, we know each other more, love each other more, and follow the Lord together more.",
         photos: [
           p(field, "Nada and John on a sunny lawn, his arm around her", "50% 25%"),
+          p(graduationHug, "John holding Nada close at her graduation, flowers in her hands", "50% 30%"),
+          p(busTrip, "A selfie of John and Nada on a bus trip", "50% 50%"),
           p(cafeGift, "John holding a gift bag while Nada smiles at the camera", "50% 40%"),
         ],
       },
@@ -168,10 +183,17 @@ export const site = {
     photos: [
       p(engagement, "Nada and John on their engagement day", "50% 20%"),
       p(fountain, "Nada and John on a bridge beside a fountain", "38% 50%"),
+      p(engagementTrio, "Nada and John with family on their engagement day", "50% 30%"),
       p(nightSelfie, "A night-time selfie of Nada and John", "50% 40%"),
+      p(graduationFaculty, "Nada in her graduation sash with John outside her faculty", "50% 60%"),
       p(whiteShirt, "Nada and John holding hands at night", "50% 22%"),
+      p(engagementFamily, "Nada and John with their families on their engagement day", "50% 50%"),
+      p(neonWings, "Nada and John in front of glowing neon wings", "50% 50%"),
       p(friendsFour, "Nada and John with two friends", "50% 40%"),
+      p(christmasTree, "Nada and John beside a Christmas tree", "50% 35%"),
+      p(engagementSelfie, "John's selfie with Nada and family on their engagement day", "50% 40%"),
       p(woodWall, "Nada and John in front of a wooden wall", "50% 22%"),
+      p(engagementFamily2, "Nada and John standing with family in the living room on their engagement day", "50% 50%"),
       p(friendsDinner, "Nada and John at dinner with a friend", "50% 45%"),
     ],
   },

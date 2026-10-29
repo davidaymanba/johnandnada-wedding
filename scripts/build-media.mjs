@@ -32,8 +32,28 @@ const photos = {
   "friends-dinner": "photos/friends-restaurant.jpg",
 };
 
-for (const [slug, src] of Object.entries(photos)) {
-  await sharp(path.join(kit, src))
+// Added later from WhatsApp, kept next to the project folder.
+const extra = {
+  "first-photo": "اول صورة بينهم .jpeg",
+  "nile-boat": "WhatsApp  2026-10-29 at 15.42.36.jpeg",
+  "graduation-hug": "WhatsApp Image 2026-10-29 at 15.42.35.jpeg",
+  "graduation-faculty": "WhatsApp Image 2026-10-29 at 15.42.36.jpeg",
+  "bus-trip": "WhatsApp Image 22-10-29 at 15.42.36.jpeg",
+  "engagement-trio": "WhatsApp Image 2026-10-29 at 15.42.06.jpeg",
+  "engagement-family": "WhatsApp Image 202-10-29 at 15.42.06.jpeg",
+  "engagement-family-2": "WhatsApp Image 2026--29 at 15.42.06.jpeg",
+  "engagement-selfie": "WhatsApp Image -10-29 at 15.42.07.jpeg",
+  "neon-wings": " Image 2026-10-29 at 15.42.37.jpeg",
+  "christmas-tree": "WhatsApp Image 2026-10-29 at 15.42.37.jpeg",
+};
+
+const sources = [
+  ...Object.entries(photos).map(([slug, src]) => [slug, path.join(kit, src)]),
+  ...Object.entries(extra).map(([slug, src]) => [slug, path.resolve(root, "..", src)]),
+];
+for (const [slug, src] of sources) {
+  if (!fs.existsSync(src)) continue;
+  await sharp(src)
     .rotate()
     .resize({ width: 1800, height: 1800, fit: "inside", withoutEnlargement: true })
     .jpeg({ quality: 86, mozjpeg: true })
