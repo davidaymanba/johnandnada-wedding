@@ -1078,6 +1078,15 @@ html.js .verse__inner {
   font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
   text-align: left;
 }
+.details__venue small {
+  display: block;
+  margin-top: 0.3em;
+  font-family: var(--font-sans);
+  font-size: 0.5em;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
 .details__icon {
   flex: none;
   width: 22px;

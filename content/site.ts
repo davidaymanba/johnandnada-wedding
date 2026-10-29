@@ -52,6 +52,7 @@ export const site = {
     dateLong: "November 11, 2026",
     time: "7:00 PM",
     venue: "The First Evangelical Church",
+    city: "Assiut, Egypt",
     /** Full place for calendar entries */
     address: "The First Evangelical Church, Assiut, Egypt",
     mapsUrl: "https://maps.app.goo.gl/ETyZ5LV5ocxs1PCB6",

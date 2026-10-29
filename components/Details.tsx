@@ -113,7 +113,10 @@ export function Details() {
           <li className="details__row">
             <PinIcon />
             <span className="mask">
-              <span>{ev.venue}</span>
+              <span className="details__venue">
+                {ev.venue}
+                <small>{ev.city}</small>
+              </span>
             </span>
           </li>
         </ul>
