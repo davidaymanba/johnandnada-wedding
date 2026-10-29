@@ -1,0 +1,24 @@
+# Runs behind the server's Traefik (Docker provider, `letsencrypt` resolver).
+# Lives at /docker/johnandnada/ next to app/ (the project) and .env (secrets).
+services:
+  web:
+    build:
+      context: ./app
+      args:
+        NEXT_PUBLIC_SITE_URL: https://johnandnada.codexai.systems
+    image: johnandnada-web
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      GUESTBOOK_FILE: /data/blessings.json
+    volumes:
+      - blessings:/data
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.johnandnada.rule: Host(`johnandnada.codexai.systems`)
+      traefik.http.routers.johnandnada.entrypoints: websecure
+      traefik.http.routers.johnandnada.tls.certresolver: letsencrypt
+      traefik.http.services.johnandnada.loadbalancer.server.port: "3000"
+
+volumes:
+  blessings:

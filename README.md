@@ -45,9 +45,27 @@ The whole page is one theme: **navy (default)** or **light**. Guests switch with
 
 **Hide a message:** `update public.guestbook set approved = false where id = '…';`
 
-Without the Supabase variables the guestbook falls back to an in-memory store. That is fine for local development, but **on Vercel messages would vanish**, so set the variables before sharing the link.
+Without the Supabase variables the guestbook keeps messages in a JSON file when `GUESTBOOK_FILE` is set (this is what the VPS uses), otherwise in memory (local development only; **on Vercel messages would vanish**).
 
-## Deploy to Vercel
+## Deploy to the VPS (live)
+
+The site runs at **https://johnandnada.codexai.systems** on the Hostinger VPS (`root@31.97.107.121`), as a Docker container behind the server's Traefik, which handles HTTPS (Let's Encrypt).
+
+- `/docker/johnandnada/app/`: this project (uploaded with rsync)
+- `/docker/johnandnada/docker-compose.yml`: copy of `deploy/docker-compose.yml`
+- `/docker/johnandnada/.env`: `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY` (server only, never committed)
+- Blessings: `/data/blessings.json` in the `johnandnada_blessings` Docker volume (survives rebuilds)
+
+Redeploy after a change:
+
+```bash
+rsync -az --delete --exclude node_modules --exclude .next --exclude .git --exclude docs/qa --exclude .env ./ root@31.97.107.121:/docker/johnandnada/app/
+ssh root@31.97.107.121 'cd /docker/johnandnada && cp app/deploy/docker-compose.yml . && docker compose up -d --build'
+```
+
+DNS: `johnandnada.codexai.systems` needs an **A record → 31.97.107.121** and no AAAA record pointing elsewhere.
+
+## Deploy to Vercel (alternative)
 
 1. Push this folder to GitHub (or run `npx vercel` inside it).
 2. In Vercel → Project → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`, and `NEXT_PUBLIC_SITE_URL` (the final URL — used for the WhatsApp preview, share link and calendar file).

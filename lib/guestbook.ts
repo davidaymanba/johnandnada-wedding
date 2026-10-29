@@ -1,5 +1,7 @@
 import "server-only";
 import { createHash, randomUUID, timingSafeEqual } from "node:crypto";
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 
 export type Entry = {
   id: string;
@@ -34,9 +36,27 @@ export function hashIp(ip: string) {
     .slice(0, 32);
 }
 
-// ── In-memory fallback (local dev without Supabase) ──────────────────────────────
+// ── Local store: a JSON file on the server's disk (GUESTBOOK_FILE), or memory in dev ──
+const FILE = process.env.GUESTBOOK_FILE;
 const g = globalThis as unknown as { __guestbook?: Row[] };
-const memory = (g.__guestbook ??= []);
+const memory = (g.__guestbook ??= load());
+
+function load(): Row[] {
+  if (!FILE) return [];
+  try {
+    return JSON.parse(readFileSync(FILE, "utf8")) as Row[];
+  } catch {
+    return [];
+  }
+}
+
+/** One Node process owns the file, so a sync write-then-rename never interleaves or tears. */
+function save() {
+  if (!FILE) return;
+  mkdirSync(dirname(FILE), { recursive: true });
+  writeFileSync(`${FILE}.tmp`, JSON.stringify(memory, null, 2));
+  renameSync(`${FILE}.tmp`, FILE);
+}
 
 async function rest(path: string, init: RequestInit = {}) {
   const res = await fetch(`${URL_}/rest/v1/${path}`, {
@@ -81,6 +101,7 @@ export async function addEntry(input: Pick<Entry, "name" | "message" | "relation
   if (!usingSupabase) {
     const row: Row = { ...input, id: randomUUID(), created_at: new Date().toISOString(), approved: true, ip_hash: ipHash };
     memory.push(row);
+    save();
     const { approved: _a, ip_hash: _i, ...e } = row;
     return e;
   }

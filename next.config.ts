@@ -2,6 +2,7 @@ import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone", // self-contained server for the Docker image (see Dockerfile)
   turbopack: { root: path.resolve(".") },
   images: {
     formats: ["image/avif", "image/webp"],
