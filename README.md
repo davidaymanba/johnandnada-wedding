@@ -56,7 +56,11 @@ The site runs at **https://johnandnada.codexai.systems** on the Hostinger VPS (`
 - `/docker/johnandnada/.env`: `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY` (server only, never committed)
 - Blessings: `/data/blessings.json` in the `johnandnada_blessings` Docker volume (survives rebuilds)
 
-**Every push to `main` deploys automatically.** `.github/workflows/deploy.yml` SSHes into the VPS with the `DEPLOY_KEY` secret; on the server that key is locked (`command=` in `authorized_keys`) to `deploy/deploy.sh`, which pulls `main` into `app/`, rebuilds the image and checks the site answers. Watch it under the repo's **Actions** tab; **Run workflow** there redeploys without a push.
+**Every push to `main` deploys automatically** (within about a minute, plus ~2 minutes to build). A cron job on the VPS runs `deploy/autodeploy.sh` every minute; when GitHub's `main` has new commits it runs `deploy/deploy.sh`, which pulls `main` into `app/`, rebuilds the image and checks the site answers. No keys or GitHub secrets are involved: the server only reads the public repo.
+
+- Cron: `/etc/cron.d/johnandnada-deploy` → `* * * * * root /docker/johnandnada/app/deploy/autodeploy.sh >> /var/log/johnandnada-deploy.log 2>&1`
+- Deploy log: `ssh root@31.97.107.121 tail -50 /var/log/johnandnada-deploy.log`
+- Deploy right now: `ssh root@31.97.107.121 /docker/johnandnada/app/deploy/deploy.sh`
 
 DNS: `johnandnada.codexai.systems` needs an **A record → 31.97.107.121** and no AAAA record pointing elsewhere.
 

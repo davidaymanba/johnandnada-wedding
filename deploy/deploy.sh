@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs on the VPS (GitHub Actions calls it over SSH after every push to main).
+# Runs on the VPS (autodeploy.sh calls it when GitHub's main has new commits).
 # Pulls the latest main into /docker/johnandnada/app and rebuilds the container.
 set -euo pipefail
 
