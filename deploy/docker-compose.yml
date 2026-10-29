@@ -15,7 +15,11 @@ services:
       - blessings:/data
     labels:
       traefik.enable: "true"
-      traefik.http.routers.johnandnada.rule: Host(`johnandnada.codexai.systems`)
+      traefik.http.routers.johnandnada.rule: Host(`johnandnada.codexai.systems`) || Host(`www.johnandnada.codexai.systems`)
+      traefik.http.routers.johnandnada.middlewares: johnandnada-www
+      traefik.http.middlewares.johnandnada-www.redirectregex.regex: ^https://www\.johnandnada\.codexai\.systems/(.*)
+      traefik.http.middlewares.johnandnada-www.redirectregex.replacement: https://johnandnada.codexai.systems/$${1}
+      traefik.http.middlewares.johnandnada-www.redirectregex.permanent: "true"
       traefik.http.routers.johnandnada.entrypoints: websecure
       traefik.http.routers.johnandnada.tls.certresolver: letsencrypt
       traefik.http.services.johnandnada.loadbalancer.server.port: "3000"
