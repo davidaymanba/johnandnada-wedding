@@ -81,7 +81,7 @@
   --pad-y: clamp(6.5rem, 14vw, 12rem);
   --max: 1240px;
 
-  --fs-eyebrow: 0.7rem;
+  --fs-eyebrow: 0.78rem;
   --fs-body: clamp(1.15rem, 1.05rem + 0.35vw, 1.35rem);
   --fs-lead: clamp(1.45rem, 1.1rem + 1.4vw, 2.2rem);
   --fs-h2: clamp(2.7rem, 1.6rem + 4.6vw, 5.6rem);
@@ -549,6 +549,22 @@ html[data-intro="skip"] .intro {
     margin: 0 0.25em;
   }
 }
+/* Phones turned sideways: names on one small line, above the door. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .intro__title {
+    inset-block-start: 14px;
+  }
+  .intro__title .eyebrow {
+    margin-bottom: 0.3rem;
+  }
+  .intro__names {
+    display: block;
+    font-size: clamp(1.3rem, 7svh, 1.8rem);
+  }
+  .intro__names .amp {
+    margin: 0 0.25em;
+  }
+}
 .intro__ring {
   position: absolute;
   left: var(--knock-x);
@@ -632,6 +648,18 @@ html.js .intro__preload {
 }
 .intro__monogram .monogram__glyph {
   fill-opacity: 0;
+}
+/* Short screens (phone sideways): monogram, date and button all fit. */
+@media (max-height: 500px) {
+  .intro__preload {
+    gap: 0.8rem;
+  }
+  .intro__monogram {
+    width: 28svh;
+  }
+  .intro__begin-wrap {
+    margin-top: 0.3rem;
+  }
 }
 .intro__preload-date {
   margin: 0;
@@ -722,6 +750,7 @@ html.js .intro__preload {
 .hero-photo {
   position: relative;
   z-index: 0;
+  overflow: clip; /* the scale-in stays inside the frame (phones otherwise scroll sideways) */
   width: calc(100% + 2 * var(--gutter));
   margin: 0 calc(-1 * var(--gutter));
 }
@@ -832,7 +861,7 @@ html.js .verse__inner {
   justify-items: center;
   gap: 0.8rem;
   font-family: var(--font-sans);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   text-decoration: none;
@@ -948,7 +977,7 @@ html.js .verse__inner {
 .invite__role {
   margin-top: 1.4rem;
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: 0.74rem;
   letter-spacing: 0.36em;
   text-transform: uppercase;
   color: var(--fg-2);
@@ -1082,7 +1111,7 @@ html.js .verse__inner {
   display: block;
   margin-top: 0.3em;
   font-family: var(--font-sans);
-  font-size: 0.5em;
+  font-size: 0.74rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--fg-2);
@@ -1232,7 +1261,7 @@ html.js .verse__inner {
 .milestone__num {
   margin: 0 0 0.6rem;
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   letter-spacing: 0.4em;
   color: var(--accent-text);
 }
@@ -1422,7 +1451,7 @@ html.js .verse__inner {
 }
 .unit__label {
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-size: 0.74rem;
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--accent-text);
@@ -1467,7 +1496,7 @@ html.js .verse__inner {
   align-items: start;
   margin-top: 1rem;
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--fg-2);
@@ -1522,7 +1551,7 @@ html.js .verse__inner {
 }
 .field__label {
   font-family: var(--font-sans);
-  font-size: 0.66rem;
+  font-size: 0.78rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--fg-2);
@@ -1571,7 +1600,7 @@ html.js .verse__inner {
 .field__count {
   justify-self: end;
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.76rem;
   color: var(--fg-2);
 }
 .chips {
@@ -1839,7 +1868,7 @@ html.js .verse__inner {
   display: grid;
   grid-template-areas: "stack";
   width: calc(100% + 2 * var(--gutter));
-  max-width: 600px;
+  max-width: min(600px, 94svh * 3 / 4); /* the whole photo always fits on screen */
   margin: clamp(1rem, 4vw, 3rem) calc(-1 * var(--gutter)) 0;
 }
 .closing__sign > * {
@@ -1903,24 +1932,31 @@ html.js .verse__inner {
 .closing__date {
   margin-top: 0.6rem;
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   letter-spacing: 0.4em;
   color: var(--fg-2);
 }
 .closing__credit {
   margin: clamp(5rem, 12vw, 8rem) 0 0;
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   letter-spacing: 0.16em;
   color: var(--fg-2);
 }
 .closing__credit a {
+  position: relative;
   text-decoration: none;
   border-bottom: 1px solid var(--hair);
   padding-bottom: 2px;
   transition:
     color 0.4s,
     border-color 0.4s;
+}
+/* A finger-sized tap area around the small text */
+.closing__credit a::after {
+  content: "";
+  position: absolute;
+  inset: -14px -8px;
 }
 .closing__credit a:hover {
   color: var(--accent-text);
@@ -1966,6 +2002,52 @@ html.js .verse__inner {
   }
   .chapter__panel {
     grid-column: 1 / -1;
+  }
+}
+
+/* Phones turned sideways: short, wide screens. Every photo fits on screen; the verse
+   photo becomes a side panel like on desktop. */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 899px) {
+  .verse {
+    align-content: center;
+    justify-items: start;
+    padding: 2.5rem 50vw 3.5rem var(--gutter);
+  }
+  .verse .hero-photo {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 46vw;
+    margin: 0;
+  }
+  .verse .hero-photo__img {
+    height: 100%;
+    object-fit: cover;
+  }
+  .verse .hero-photo__veil {
+    background:
+      linear-gradient(90deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 55%, transparent) 18%, transparent 42%),
+      linear-gradient(0deg, var(--bg) 0%, transparent 22%);
+  }
+  .verse__inner {
+    margin: 0;
+    padding-bottom: 0;
+    justify-self: center;
+  }
+  .verse__text {
+    font-size: clamp(1.1rem, 5.6svh, 1.45rem);
+  }
+  .frame {
+    max-width: calc(90svh * 3 / 4);
+    margin-inline: auto;
+  }
+  .arch {
+    max-width: calc(80svh * 3 / 4.3);
+    margin-inline: auto;
+  }
+  .closing__sign {
+    margin-inline: auto;
   }
 }
 
