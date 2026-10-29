@@ -51,17 +51,12 @@ Without the Supabase variables the guestbook keeps messages in a JSON file when 
 
 The site runs at **https://johnandnada.codexai.systems** on the Hostinger VPS (`root@31.97.107.121`), as a Docker container behind the server's Traefik, which handles HTTPS (Let's Encrypt).
 
-- `/docker/johnandnada/app/`: this project (uploaded with rsync)
+- `/docker/johnandnada/app/`: a clone of this repo (updated by `deploy/deploy.sh`)
 - `/docker/johnandnada/docker-compose.yml`: copy of `deploy/docker-compose.yml`
 - `/docker/johnandnada/.env`: `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY` (server only, never committed)
 - Blessings: `/data/blessings.json` in the `johnandnada_blessings` Docker volume (survives rebuilds)
 
-Redeploy after a change:
-
-```bash
-rsync -az --delete --exclude node_modules --exclude .next --exclude .git --exclude docs/qa --exclude .env ./ root@31.97.107.121:/docker/johnandnada/app/
-ssh root@31.97.107.121 'cd /docker/johnandnada && cp app/deploy/docker-compose.yml . && docker compose up -d --build'
-```
+**Every push to `main` deploys automatically.** `.github/workflows/deploy.yml` SSHes into the VPS with the `DEPLOY_KEY` secret; on the server that key is locked (`command=` in `authorized_keys`) to `deploy/deploy.sh`, which pulls `main` into `app/`, rebuilds the image and checks the site answers. Watch it under the repo's **Actions** tab; **Run workflow** there redeploys without a push.
 
 DNS: `johnandnada.codexai.systems` needs an **A record → 31.97.107.121** and no AAAA record pointing elsewhere.
 

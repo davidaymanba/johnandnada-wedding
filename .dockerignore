@@ -9,3 +9,4 @@ supabase
 deploy
 *.tsbuildinfo
 Dockerfile
+.github
