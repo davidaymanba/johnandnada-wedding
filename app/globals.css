@@ -1996,9 +1996,18 @@ html.js .verse__inner {
 
 /* ───────────────────────────── Tablet ───────────────────────────── */
 @media (min-width: 600px) and (max-width: 899px) {
-  .memories__grid,
   .chapter__rail {
     grid-template-columns: 1fr 1fr;
+  }
+  /* Two photos a row on a 4-track grid, so an odd last photo can sit in the middle. */
+  .memories__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .tile {
+    grid-column: span 2;
+  }
+  .tile:nth-child(odd):last-child {
+    grid-column: 2 / span 2;
   }
   .chapter__panel {
     grid-column: 1 / -1;
@@ -2285,9 +2294,22 @@ html.js .verse__inner {
   }
 
 
+  /* Four photos a row on an 8-track grid, so a short last row is centred. */
   .memories__grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(8, 1fr);
     gap: 16px;
+  }
+  .tile {
+    grid-column: span 2;
+  }
+  .tile:nth-child(4n + 1):nth-last-child(3) {
+    grid-column: 2 / span 2;
+  }
+  .tile:nth-child(4n + 1):nth-last-child(2) {
+    grid-column: 3 / span 2;
+  }
+  .tile:nth-child(4n + 1):last-child {
+    grid-column: 4 / span 2;
   }
   .lightbox__nav {
     top: 50%;

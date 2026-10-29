@@ -10,15 +10,12 @@ import proposal from "@/assets/photos/proposal.jpg";
 import engagement from "@/assets/photos/engagement.jpg";
 import theDay from "@/assets/photos/the-day.jpg";
 import field from "@/assets/photos/field.jpg";
-import river from "@/assets/photos/river.jpg";
-import cardSelfie from "@/assets/photos/card-selfie.jpg";
 import cafeGift from "@/assets/photos/cafe-gift.jpg";
 import prepSelfie from "@/assets/photos/prep-selfie.jpg";
 import prepFriends from "@/assets/photos/prep-friends.jpg";
 import fountain from "@/assets/photos/fountain.jpg";
 import nightSelfie from "@/assets/photos/night-selfie.jpg";
 import whiteShirt from "@/assets/photos/white-shirt.jpg";
-import officeLunch from "@/assets/photos/office-lunch.jpg";
 import woodWall from "@/assets/photos/wood-wall.jpg";
 import friendsFour from "@/assets/photos/friends-four.jpg";
 import friendsDinner from "@/assets/photos/friends-dinner.jpg";
@@ -123,8 +120,6 @@ export const site = {
         text: "Every day we walk together, we know each other more, love each other more, and follow the Lord together more.",
         photos: [
           p(field, "Nada and John on a sunny lawn, his arm around her", "50% 25%"),
-          p(river, "A sunset selfie of Nada and John by the river", "50% 45%"),
-          p(cardSelfie, "Nada and John laughing in a selfie, John holding a card", "50% 40%"),
           p(cafeGift, "John holding a gift bag while Nada smiles at the camera", "50% 40%"),
         ],
       },
@@ -177,7 +172,6 @@ export const site = {
       p(whiteShirt, "Nada and John holding hands at night", "50% 22%"),
       p(friendsFour, "Nada and John with two friends", "50% 40%"),
       p(woodWall, "Nada and John in front of a wooden wall", "50% 22%"),
-      p(officeLunch, "Nada and John sharing lunch at the office", "50% 45%"),
       p(friendsDinner, "Nada and John at dinner with a friend", "50% 45%"),
     ],
   },

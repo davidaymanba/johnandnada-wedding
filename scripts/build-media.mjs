@@ -21,15 +21,12 @@ const photos = {
   engagement: "photos/proposal-2025-10-18.jpg", // «يوم الخطوبة 7 -11 - 2025»
   "the-day": "photos/couple-church-night.jpg", // «… نكون واحد نمجد الله سوا …»
   field: "photos/couple-field.jpg",
-  river: "photos/couple-river-sunset.jpg",
-  "card-selfie": "photos/couple-card-selfie.jpg",
   "cafe-gift": "photos/couple-cafe-gift.jpg",
   "prep-selfie": "photos/prep-home-selfie.jpg",
   "prep-friends": "photos/prep-home-with-friend.jpg",
   fountain: "photos/couple-fountain.jpg",
   "night-selfie": "photos/couple-night-selfie.jpg",
   "white-shirt": "photos/couple-night-white-shirt.jpg",
-  "office-lunch": "photos/couple-office-lunch.jpg",
   "wood-wall": "photos/couple-wood-wall.jpg",
   "friends-four": "photos/friends-four.jpg",
   "friends-dinner": "photos/friends-restaurant.jpg",
