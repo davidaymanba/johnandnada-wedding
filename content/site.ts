@@ -52,8 +52,9 @@ export const site = {
     dateLong: "November 11, 2026",
     time: "7:00 PM",
     venue: "The First Evangelical Church",
-    // TODO(couple): replace with the church's exact Google Maps link
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=The+First+Evangelical+Church",
+    /** Full place for calendar entries */
+    address: "The First Evangelical Church, Assiut, Egypt",
+    mapsUrl: "https://maps.app.goo.gl/ETyZ5LV5ocxs1PCB6",
   },
 
   /** Countdown "progress" runs from the engagement to the wedding */

@@ -13,7 +13,7 @@ export function googleCalendarUrl() {
     text: calendarText.title,
     dates: `${stamp(site.event.start)}/${stamp(site.event.end)}`,
     details: calendarText.details,
-    location: site.event.venue,
+    location: site.event.address,
     ctz: "Africa/Cairo",
   });
   return `https://calendar.google.com/calendar/render?${params}`;
@@ -35,7 +35,7 @@ export function icsFile() {
     `DTEND:${stamp(site.event.end)}`,
     `SUMMARY:${esc(calendarText.title)}`,
     `DESCRIPTION:${esc(calendarText.details)}`,
-    `LOCATION:${esc(site.event.venue)}`,
+    `LOCATION:${esc(site.event.address)}`,
     `URL:${site.url}`,
     "BEGIN:VALARM",
     "TRIGGER:-P1D",
