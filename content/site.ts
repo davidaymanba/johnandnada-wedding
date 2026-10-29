@@ -181,10 +181,10 @@ export const site = {
     eyebrow: "Memories",
     title: "Moments we keep",
     photos: [
+      p(nightSelfie, "A night-time selfie of Nada and John", "50% 40%"),
       p(engagement, "Nada and John on their engagement day", "50% 20%"),
       p(fountain, "Nada and John on a bridge beside a fountain", "38% 50%"),
       p(engagementTrio, "Nada and John with family on their engagement day", "50% 30%"),
-      p(nightSelfie, "A night-time selfie of Nada and John", "50% 40%"),
       p(graduationFaculty, "Nada in her graduation sash with John outside her faculty", "50% 60%"),
       p(whiteShirt, "Nada and John holding hands at night", "50% 22%"),
       p(engagementFamily, "Nada and John with their families on their engagement day", "50% 50%"),
@@ -240,32 +240,32 @@ export type Verse = {
 export const verses: Verse[] = [
   {
     placement: "opening",
-    text: "What man is he that feareth the LORD? him shall he teach in the way that he shall choose. His soul shall dwell at ease; and his seed shall inherit the earth.",
+    text: "Who is the man that fears the Lord? Him shall He teach in the way He chooses. He himself shall dwell in prosperity, And his descendants shall inherit the earth.",
     ref: "Psalm 25:12–13",
   },
   {
     placement: "after-beginning",
-    text: "Delight thyself also in the LORD; and he shall give thee the desires of thine heart. Commit thy way unto the LORD; trust also in him; and he shall bring it to pass.",
+    text: "Delight yourself also in the Lord, And He shall give you the desires of your heart. Commit your way to the Lord, Trust also in Him, And He shall bring it to pass.",
     ref: "Psalm 37:4–5",
   },
   {
     placement: "after-walking",
-    text: "The steps of a good man are ordered by the LORD: and he delighteth in his way.",
+    text: "The steps of a good man are ordered by the Lord, And He delights in his way.",
     ref: "Psalm 37:23",
   },
   {
     placement: "after-engagement",
-    text: "Wherefore the LORD God of Israel saith, I said indeed that thy house, and the house of thy father, should walk before me for ever: but now the LORD saith, Be it far from me; for them that honour me I will honour, and they that despise me shall be lightly esteemed.",
+    text: "Therefore the Lord God of Israel says: ‘I said indeed that your house and the house of your father would walk before Me forever.’ But now the Lord says: ‘Far be it from Me; for those who honor Me I will honor, and those who despise Me shall be lightly esteemed.’",
     ref: "1 Samuel 2:30",
   },
   {
     placement: "before-countdown",
-    text: "…keep through thine own name those whom thou hast given me, that they may be one, as we are.",
+    text: "Holy Father, keep through Your name those whom You have given Me, that they may be one as We are.",
     ref: "John 17:11",
   },
   {
     placement: "closing",
-    text: "And I have declared unto them thy name, and will declare it: that the love wherewith thou hast loved me may be in them, and I in them.",
+    text: "And I have declared to them Your name, and will declare it, that the love with which You loved Me may be in them, and I in them.",
     ref: "John 17:26",
   },
 ];

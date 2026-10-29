@@ -182,6 +182,13 @@ a {
 :root[data-theme="light"] .grain {
   opacity: 0.05;
 }
+/* Photos can't be dragged out, selected, or long-pressed to "Save image" (see also Experience.tsx). */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
 /* Phones: a full-screen layer over everything costs more than its faint texture is worth. */
 @media (hover: none) and (max-width: 899px) {
   .grain {

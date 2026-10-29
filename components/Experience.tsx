@@ -19,6 +19,19 @@ export function Experience({ children }: { children: ReactNode }) {
 
   useEffect(() => onIntroDone(() => setOpened(true)), []);
 
+  // Photos are theirs: no "Save image" menu (right-click / Android long-press) and no dragging them out.
+  useEffect(() => {
+    const block = (e: Event) => {
+      if ((e.target as Element | null)?.closest?.("img, .frame, .arch, .hero-photo, .lightbox")) e.preventDefault();
+    };
+    document.addEventListener("contextmenu", block);
+    document.addEventListener("dragstart", block);
+    return () => {
+      document.removeEventListener("contextmenu", block);
+      document.removeEventListener("dragstart", block);
+    };
+  }, []);
+
   // Once the door is open, fetch the rest of the photos quietly, top to bottom, a few at a time —
   // so they are already there when a guest scrolls to them (phones only start lazy images at the last moment).
   useEffect(() => {
