@@ -28,7 +28,8 @@ Everything lives in **`content/site.ts`**: names, date and time, venue, the **Go
 - **The hymn ("The Blessing"):** `public/media/the-blessing.m4a` starts automatically the moment the guest knocks and the church door opens (the knock is the tap that allows sound), fades in, and loops. A floating button (bottom right) pauses/plays it. To change it, replace the file or set `site.music`; `null` = no music.
 - **Photos:** every rectangular photo uses the same 3:4 frame. Portraits fill it; landscape photos are shown whole (nobody cropped out) over a soft blur of themselves. On phones photos run one per row, full width. The photos behind the opening verse and the closing are `site.versePhoto` and `site.closing.photo`.
 - **Order of names:** the groom is always first (John Michel & Nada Nassef); in the invitation the groom's portrait is on the left and the bride's on the right.
-- **Photos:** originals are in `../wedding-kit/assets`. `npm run media` re-creates `assets/photos/*` and the video/door files (needs `ffmpeg`). `next/image` serves AVIF/WebP at responsive sizes with blur placeholders automatically.
+- **Photos:** originals are in `../wedding-kit/assets`. `npm run media` re-creates `assets/photos/*` and the video/door files (needs `ffmpeg`).
+- **Intro film:** the portrait master `John-Nada-Intro-4K-Master-v2.mp4` sits in the project root (git-ignored, too big for GitHub). `npm run media` cuts it at 20.5s into `public/media/intro-1080x1920.mp4` / `intro-720x1280.mp4`, takes its full soundtrack, and saves the last frame as the door still. If you replace the film, re-measure `site.door` on that last frame. `next/image` serves AVIF/WebP at responsive sizes with blur placeholders automatically.
 - **Monogram (J & N):** `npm run monogram` rebuilds `content/monogram.ts` from the real Cormorant Garamond / Pinyon Script glyph outlines.
 
 ## Theme

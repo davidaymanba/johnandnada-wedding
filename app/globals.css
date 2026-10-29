@@ -398,12 +398,28 @@ html[data-intro="skip"] .intro {
   inset: 0;
   will-change: transform;
 }
+/* Wide screens: the film's colours, blurred, beside the portrait film. */
+.intro__ambient {
+  position: absolute;
+  left: -10%;
+  top: -10%;
+  width: 120%;
+  height: 120%;
+  display: none;
+  filter: blur(36px) brightness(0.5) saturate(1.15);
+}
+.intro[data-wide] .intro__ambient {
+  display: block;
+}
+.intro[data-wide] .intro__stage {
+  box-shadow: 0 0 160px 40px rgb(0 0 0 / 0.5);
+}
 .intro__stage {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1920px;
-  height: 1080px;
+  width: 1080px;
+  height: 1920px;
   transform-origin: 0 0;
   transform: translate3d(var(--ox, 0), var(--oy, 0), 0) scale(var(--s, 1));
 }
@@ -412,8 +428,8 @@ html[data-intro="skip"] .intro {
 .intro__still img {
   position: absolute;
   inset: 0;
-  width: 1920px;
-  height: 1080px;
+  width: 1080px;
+  height: 1920px;
   max-width: none;
 }
 .intro__video {
@@ -449,8 +465,8 @@ html[data-intro="skip"] .intro {
   position: absolute;
   top: 0;
   height: 100%;
-  background-image: image-set(url("/media/door-1920.avif") type("image/avif"), url("/media/door-1920.webp") type("image/webp"), url("/media/door-1920.jpg") type("image/jpeg"));
-  background-size: 1920px 1080px;
+  background-image: image-set(url("/media/door-1080.avif") type("image/avif"), url("/media/door-1080.webp") type("image/webp"), url("/media/door-1080.jpg") type("image/jpeg"));
+  background-size: 1080px 1920px;
   backface-visibility: hidden;
   will-change: transform;
 }
@@ -472,7 +488,7 @@ html[data-intro="skip"] .intro {
 }
 .door__seam {
   position: absolute;
-  top: 18%;
+  top: 2%;
   bottom: 1%;
   width: 3px;
   margin-left: -1px;
@@ -487,8 +503,8 @@ html[data-intro="skip"] .intro {
 }
 .door__btn {
   position: absolute;
-  inset: -40px -60px;
-  border-radius: 40% 40% 8px 8px;
+  inset: -60px -80px;
+  border-radius: 12px;
 }
 .door__btn:focus-visible {
   outline: 2px solid rgb(255 236 190 / 0.9);

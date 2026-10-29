@@ -191,18 +191,17 @@ export const site = {
   },
 
   /**
-   * Door geometry, in source-video pixels (1920×1080), measured on frame 221 —
-   * the last frame of the encoded intro and the exact door still.
+   * Door geometry, in source-video pixels (1080×1920, portrait), measured on frame 614 —
+   * the last frame of the encoded intro and the exact door still. The two leaves sit
+   * below the fixed fanlight, so they are plain rectangles.
    */
   door: {
-    frame: { w: 1920, h: 1080 },
-    x: 840,
-    y: 477,
-    w: 211,
-    h: 390,
-    seam: 947,
-    /** y where the pointed arch springs from the vertical jambs */
-    spring: 595,
+    frame: { w: 1080, h: 1920 },
+    x: 293,
+    y: 898,
+    w: 484,
+    h: 932,
+    seam: 534,
   },
 };
 
