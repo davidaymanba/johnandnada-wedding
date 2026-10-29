@@ -19,6 +19,33 @@ export function Experience({ children }: { children: ReactNode }) {
 
   useEffect(() => onIntroDone(() => setOpened(true)), []);
 
+  // Once the door is open, fetch the rest of the photos quietly, top to bottom, a few at a time —
+  // so they are already there when a guest scrolls to them (phones only start lazy images at the last moment).
+  useEffect(() => {
+    if (!opened) return;
+    let stopped = false;
+    const warm = async () => {
+      const imgs = [...document.querySelectorAll<HTMLImageElement>('main img[loading="lazy"]')];
+      for (let i = 0; i < imgs.length && !stopped; i += 3) {
+        await Promise.all(
+          imgs.slice(i, i + 3).map((img) => {
+            if (img.complete) return;
+            img.loading = "eager";
+            return new Promise((r) => {
+              img.addEventListener("load", r, { once: true });
+              img.addEventListener("error", r, { once: true });
+            });
+          }),
+        );
+      }
+    };
+    const id = setTimeout(warm, 2500);
+    return () => {
+      stopped = true;
+      clearTimeout(id);
+    };
+  }, [opened]);
+
   // Lenis ↔ ScrollTrigger, on one clock (GSAP's ticker). Off for reduced motion.
   useEffect(() => {
     if (window.matchMedia(MQ.reduce).matches) return;

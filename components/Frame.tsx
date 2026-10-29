@@ -21,8 +21,9 @@ export function Frame({ photo, sizes, className = "", imgProps }: Props) {
   const fills = Math.abs(ratio - RATIO) < 0.1;
   return (
     <div className={`frame ${fills ? "" : "frame--whole"} ${className}`}>
-      {/* A tiny copy of the same photo, blurred, fills the space around a landscape shot. */}
-      {!fills && <Image src={photo.src} alt="" aria-hidden="true" sizes="96px" className="frame__fill" />}
+      {/* The photo's own tiny blur placeholder, stretched, fills the space around a landscape shot.
+          No CSS blur filter: phones would re-blur it on every repaint while scrolling. */}
+      {!fills && <div className="frame__fill" aria-hidden="true" style={{ backgroundImage: `url("${photo.src.blurDataURL}")` }} />}
       <div className="frame__reveal">
         <Image
           src={photo.src}

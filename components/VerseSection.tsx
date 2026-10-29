@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
 import { onIntroDone } from "@/lib/intro-state";
 import { site, verseAt } from "@/content/site";
 import { HeroPhoto } from "./HeroPhoto";
@@ -42,6 +42,8 @@ export function VerseSection() {
           gsap.set(q(".verse__inner"), { autoAlpha: 1 });
           tl.play();
         });
+
+        ScrollTrigger.create({ trigger: root.current, start: "top bottom", end: "bottom top", toggleClass: "is-live" });
 
         // The words and the photo stay put while scrolling — nothing fades or slides away.
         gsap.to(q(".verse__rays"), {

@@ -25,7 +25,7 @@ function Milestone({ s, index, side }: { s: StepT; index: number; side: "left" |
       </div>
       {photo && (
         <div className="milestone__media">
-          <Frame photo={photo} sizes="(min-width: 900px) 440px, 100vw" />
+          <Frame photo={photo} sizes="(min-width: 900px) 440px, calc(100vw - 84px)" />
         </div>
       )}
     </article>
@@ -268,7 +268,7 @@ export function Story() {
       <div className="finale">
         {/* A plain 3:4 frame (not the arch) so the whole photo shows — John's head sits at the very top. */}
         <div className="finale__photo">
-          <Frame photo={theDayPhoto} sizes="(min-width: 900px) 440px, 100vw" />
+          <Frame photo={theDayPhoto} sizes="(min-width: 600px) 440px, calc(100vw - 40px)" />
         </div>
         <div className="finale__text">
           <p className="milestone__num">07</p>
@@ -301,7 +301,7 @@ export function Story() {
 function ChapterItem({ photo }: { photo: Photo }) {
   return (
     <figure className="chapter__item">
-      <Frame photo={photo} sizes="(min-width: 900px) 40vw, 100vw" />
+      <Frame photo={photo} sizes="(min-width: 900px) 40vw, (min-width: 600px) 50vw, calc(100vw - 40px)" />
     </figure>
   );
 }

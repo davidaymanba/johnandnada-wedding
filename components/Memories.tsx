@@ -72,7 +72,7 @@ export function Memories() {
         {photos.map((p, i) => (
           <li key={p.alt} className="tile">
             <button ref={(el) => void (thumbs.current[i] = el)} type="button" className="tile__btn" onClick={() => show(i)} aria-label={`Open photo: ${p.alt}`}>
-              <Frame photo={p} sizes="(min-width: 900px) 300px, 100vw" imgProps={{ "data-flip-id": `photo-${i}` }} />
+              <Frame photo={p} sizes="(min-width: 900px) 300px, (min-width: 600px) 50vw, calc(100vw - 40px)" imgProps={{ "data-flip-id": `photo-${i}` }} />
             </button>
           </li>
         ))}
