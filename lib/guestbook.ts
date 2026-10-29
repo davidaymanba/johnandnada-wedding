@@ -113,3 +113,16 @@ export async function addEntry(input: Pick<Entry, "name" | "message" | "relation
   const [row] = (await res.json()) as Entry[];
   return row;
 }
+
+/** Removes one message for good (the couple's private page). Returns whether it existed. */
+export async function deleteEntry(id: string): Promise<boolean> {
+  if (!usingSupabase) {
+    const i = memory.findIndex((r) => r.id === id);
+    if (i < 0) return false;
+    memory.splice(i, 1);
+    save();
+    return true;
+  }
+  const res = await rest(`guestbook?id=eq.${encodeURIComponent(id)}`, { method: "DELETE", headers: { Prefer: "return=representation" } });
+  return ((await res.json()) as unknown[]).length > 0;
+}

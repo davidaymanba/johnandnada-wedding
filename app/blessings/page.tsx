@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isAdminKey, listEntries, type Entry } from "@/lib/guestbook";
 import { site } from "@/content/site";
+import { DeleteButton } from "./DeleteButton";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Blessings", robots: { index: false, follow: false } };
@@ -40,6 +41,7 @@ export default async function Blessings({ searchParams }: { searchParams: Promis
               <span className="blessing__name">{e.name}</span>
               {relLabel(e.relation) && <span className="blessing__rel">{relLabel(e.relation)}</span>}
               <time dateTime={e.created_at}>{fmt.format(new Date(e.created_at))}</time>
+              <DeleteButton adminKey={key!} id={e.id} name={e.name} />
             </p>
           </li>
         ))}
