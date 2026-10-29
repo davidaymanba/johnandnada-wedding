@@ -14,31 +14,28 @@ const F = D.frame;
 const KNOCK = { x: D.seam, y: D.y + D.h * 0.56 };
 const SESSION_KEY = "nj-door";
 
+// Door shapes in the leaf's own pixels (pointed arch springs at D.spring).
+const springY = D.spring - D.y;
 const leftW = D.seam - D.x;
 const rightW = D.x + D.w - D.seam;
-/** Share of the film's height that must stay on screen; wider screens see the whole doorway instead. */
-const MIN_SHOWN = 0.82;
+const leftPath = `M0 ${D.h}V${springY}C0 ${springY * 0.54} ${leftW * 0.43} ${springY * 0.17} ${leftW} 0V${D.h}Z`;
+const rightPath = `M0 0C${rightW * 0.56} ${springY * 0.17} ${rightW} ${springY * 0.54} ${rightW} ${springY}V${D.h}H0Z`;
+const archPath = `M0 ${D.h}V${springY}C0 ${springY * 0.54} ${leftW * 0.43} ${springY * 0.17} ${leftW} 0C${leftW + rightW * 0.56} ${springY * 0.17} ${D.w} ${springY * 0.54} ${D.w} ${springY}V${D.h}Z`;
 
 type Phase = "loading" | "ready" | "playing" | "door" | "opening" | "gone";
 
-/**
- * The portrait film covers phones (door centred). On wider screens it never crops more than
- * MIN_SHOWN of its height: it stands in the middle, floor on the bottom edge, and the
- * film's own colours glow beside it.
- */
+/** object-fit: cover, but horizontally biased so the door sits in the middle of narrow screens. */
 function fit(vw: number, vh: number) {
-  const s = Math.min(Math.max(vw / F.w, vh / F.h), vh / (F.h * MIN_SHOWN));
-  const w = F.w * s;
-  const ox = w > vw ? gsap.utils.clamp(vw - w, 0, vw / 2 - D.seam * s) : (vw - w) / 2;
-  const oy = gsap.utils.clamp(vh - F.h * s, 0, vh / 2 - (D.y + D.h / 2) * s);
-  return { s, ox, oy, wide: w < vw - 1 };
+  const s = Math.max(vw / F.w, vh / F.h);
+  const ox = gsap.utils.clamp(vw - F.w * s, 0, vw / 2 - D.seam * s);
+  const oy = (vh - F.h * s) / 2;
+  return { s, ox, oy };
 }
 
 export function Intro() {
   const root = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const music = useRef<HTMLAudioElement>(null);
-  const ambient = useRef<HTMLCanvasElement>(null);
   const [phase, setPhase] = useState<Phase>("loading");
   const phaseRef = useRef<Phase>("loading");
   const geo = useRef(fit(1440, 900));
@@ -52,7 +49,7 @@ export function Intro() {
   // Skipped (deep link / already opened this session): never mount the heavy parts.
   const [skipped] = useState(() => typeof document !== "undefined" && document.documentElement.dataset.intro === "skip");
 
-  // ── layout: keep the 1080×1920 stage on screen, door centred ─────────────────────
+  // ── layout: keep the 1920×1080 stage covering the screen, door centred ───────────
   useEffect(() => {
     if (skipped) return;
     const el = root.current!;
@@ -68,40 +65,10 @@ export function Intro() {
       el.style.setProperty("--door-bottom", `${g.oy + (D.y + D.h) * g.s}px`);
       el.style.setProperty("--knock-x", `${g.ox + KNOCK.x * g.s}px`);
       el.style.setProperty("--knock-y", `${g.oy + KNOCK.y * g.s}px`);
-      el.toggleAttribute("data-wide", g.wide);
     };
     layout();
     window.addEventListener("resize", layout);
     return () => window.removeEventListener("resize", layout);
-  }, [skipped]);
-
-  // ── wide screens: a tiny, blurred copy of the film fills the space beside it ─────
-  useEffect(() => {
-    if (skipped) return;
-    const v = video.current!;
-    const ctx = ambient.current!.getContext("2d");
-    let id = 0;
-    let last = 0;
-    const draw = (t: number) => {
-      id = requestAnimationFrame(draw);
-      if (!geo.current.wide || t - last < 80 || v.readyState < 2) return;
-      last = t;
-      ctx?.drawImage(v, 0, 0, ctx.canvas.width, ctx.canvas.height);
-    };
-    const run = () => {
-      cancelAnimationFrame(id);
-      id = requestAnimationFrame(draw);
-    };
-    const stop = () => cancelAnimationFrame(id);
-    v.addEventListener("playing", run);
-    v.addEventListener("pause", stop);
-    v.addEventListener("ended", stop);
-    return () => {
-      stop();
-      v.removeEventListener("playing", run);
-      v.removeEventListener("pause", stop);
-      v.removeEventListener("ended", stop);
-    };
   }, [skipped]);
 
   // ── lock the page behind the curtain ──────────────────────────────────────────────
@@ -284,7 +251,7 @@ export function Intro() {
     gsap.to(q(".intro__preload"), { autoAlpha: 0, scale: 1.04, duration: 1.1, ease: "drift" });
     gsap.fromTo(q(".intro__skip"), { autoAlpha: 0 }, { autoAlpha: 1, delay: 1.5, duration: 0.6 });
     // Watchdog: if the stream stalls, don't keep guests waiting.
-    gsap.delayedCall(27, () => toDoor(false));
+    gsap.delayedCall(16, () => toDoor(false));
   }, [go, toDoor]);
 
   // Video and its music start together, inside the tap (that's what unlocks sound on phones).
@@ -335,7 +302,6 @@ export function Intro() {
       onClick={phase === "door" ? knock : undefined}
     >
       <div className="intro__camera">
-        <canvas ref={ambient} className="intro__ambient" width={32} height={24} aria-hidden="true" />
         <div className="intro__stage">
           <video
             ref={video}
@@ -348,26 +314,26 @@ export function Intro() {
             aria-hidden="true"
           >
             {/* Sources live in the HTML so the download starts before any JS runs. */}
-            <source src="/media/intro-1080x1920.mp4" type="video/mp4" media="(min-width: 700px)" />
-            <source src="/media/intro-720x1280.mp4" type="video/mp4" />
+            <source src="/media/intro-1080.mp4" type="video/mp4" media="(min-width: 1000px)" />
+            <source src="/media/intro-720.mp4" type="video/mp4" />
           </video>
           <audio ref={music} src="/media/intro-audio.m4a" preload="auto" aria-hidden="true" />
           <picture className="intro__still" aria-hidden="true">
-            <source type="image/avif" srcSet="/media/door-1080.avif" />
-            <source type="image/webp" srcSet="/media/door-1080.webp" />
-            <img src="/media/door-1080.jpg" alt="" width={F.w} height={F.h} decoding="async" />
+            <source type="image/avif" srcSet="/media/door-1280.avif 1280w, /media/door-1920.avif 1920w" sizes="1920px" />
+            <source type="image/webp" srcSet="/media/door-1280.webp 1280w, /media/door-1920.webp 1920w" sizes="1920px" />
+            <img src="/media/door-1920.jpg" alt="" width={1920} height={1080} decoding="async" />
           </picture>
 
           <div className="door" style={{ left: D.x, top: D.y, width: D.w, height: D.h }}>
-            <div className="door__light">
+            <div className="door__light" style={{ clipPath: `path("${archPath}")` }}>
               <div className="door__glow" />
             </div>
-            <div className="door__leaf door__leaf--l" style={{ width: leftW, backgroundPosition: `-${D.x}px -${D.y}px` }}>
+            <div className="door__leaf door__leaf--l" style={{ width: leftW, clipPath: `path("${leftPath}")`, backgroundPosition: `-${D.x}px -${D.y}px` }}>
               <span className="door__shade" />
             </div>
             <div
               className="door__leaf door__leaf--r"
-              style={{ left: leftW, width: rightW, backgroundPosition: `-${D.seam}px -${D.y}px` }}
+              style={{ left: leftW, width: rightW, clipPath: `path("${rightPath}")`, backgroundPosition: `-${D.seam}px -${D.y}px` }}
             >
               <span className="door__shade" />
             </div>

@@ -43,20 +43,17 @@ for (const [slug, src] of Object.entries(photos)) {
     .toFile(path.join(photosOut, `${slug}.jpg`));
 }
 
-// Intro film: the portrait 4K master, cut at 20.5s — by then the camera has settled on the church
-// door, which the site takes over and opens. H.264 30fps, 1080×1920 (tablets, desktop) + 720×1280 (phones).
-const video = path.join(root, "John-Nada-Intro-4K-Master-v2.mp4");
-const INTRO_CUT = 20.5;
+// Intro video: frames 0–221 only (the source fades to black after ~9.45s). H.264, 1080p (desktop) + 720p (phones).
+const video = path.join(root, "gemini_video_1080p.mp4"); // the 10s church film, kept in the project root (git-ignored)
 const ff = (...args) => execFileSync("ffmpeg", ["-v", "error", "-y", ...args], { stdio: "inherit" });
 const h264 = ["-c:v", "libx264", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart"];
-for (const [w, crf, max] of [[1080, "23", "5000k"], [720, "24", "2600k"]]) {
-  const h = (w * 16) / 9;
-  const out = path.join(mediaOut, `intro-${w}x${h}.mp4`);
-  ff("-i", video, "-t", String(INTRO_CUT), "-an", "-vf", `fps=30,scale=${w}:${h}:flags=lanczos`, ...h264, "-crf", crf, "-maxrate", max, "-bufsize", "8000k", out);
+for (const [h, rate] of [[1080, "3800k"], [720, "2000k"]]) {
+  const w = (h * 16) / 9;
+  ff("-i", video, "-frames:v", "222", "-an", "-vf", `scale=${w}:${h}`, ...h264, "-b:v", rate, path.join(mediaOut, `intro-${h}.mp4`));
 }
-// The film's own music, whole, as a separate file: it starts on the guest's tap and rings out
+// The film's own music, as a separate file: it starts on the guest's tap and is allowed to ring out
 // past the last video frame (with a soft fade instead of a hard cut).
-ff("-i", video, "-vn", "-af", "afade=t=out:st=21.6:d=1.55", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", path.join(mediaOut, "intro-audio.m4a"));
+ff("-i", video, "-vn", "-t", "10", "-af", "afade=t=out:st=9.2:d=0.8", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", path.join(mediaOut, "intro-audio.m4a"));
 
 // The hymn that starts when the door opens (streamed, so a lighter AAC is plenty).
 const hymn = path.resolve(root, "../Elevation_Worship_The_Blessing_Lyrics_ft_Kari_Jobe_Cody_CarnesMP3.mp3");
@@ -65,13 +62,16 @@ if (fs.existsSync(hymn)) {
 }
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "nj-media-"));
-// Door still = the exact last frame of the encoded 1080 film (frame 614), so the hand-off is pixel-identical.
+ff("-i", video, "-vf", "select=eq(n\\,221)", "-frames:v", "1", path.join(tmp, "door-src.png"));
+
+// Door still = the exact last frame of the encoded intro video (frame 221 ≈ 9.2s), so the hand-off is pixel-identical.
 const door = path.join(tmp, "door-src.png");
-ff("-i", path.join(mediaOut, "intro-1080x1920.mp4"), "-vf", "select=eq(n\\,614)", "-frames:v", "1", door);
-const img = sharp(door);
-await img.clone().avif({ quality: 60 }).toFile(path.join(mediaOut, "door-1080.avif"));
-await img.clone().webp({ quality: 82 }).toFile(path.join(mediaOut, "door-1080.webp"));
-await img.clone().jpeg({ quality: 84, mozjpeg: true }).toFile(path.join(mediaOut, "door-1080.jpg"));
+for (const w of [1920, 1280]) {
+  const img = sharp(door).resize(w, Math.round((w * 9) / 16));
+  await img.clone().avif({ quality: 60 }).toFile(path.join(mediaOut, `door-${w}.avif`));
+  await img.clone().webp({ quality: 82 }).toFile(path.join(mediaOut, `door-${w}.webp`));
+  await img.clone().jpeg({ quality: 84, mozjpeg: true }).toFile(path.join(mediaOut, `door-${w}.jpg`));
+}
 
 fs.rmSync(tmp, { recursive: true, force: true });
 console.log("media ready");

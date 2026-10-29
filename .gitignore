@@ -11,4 +11,5 @@ docs/qa/*.webm
 docs/qa/
 AGENTS.md
 monogram-preview.svg
+/gemini_video_*.mp4
 /John-Nada-Intro-*.mp4
