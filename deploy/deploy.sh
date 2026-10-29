@@ -18,7 +18,7 @@ main() {
   docker image prune -f >/dev/null
 
   for i in $(seq 1 30); do
-    if docker compose exec -T web wget -qO /dev/null http://127.0.0.1:3000/; then
+    if docker compose exec -T web wget -qO /dev/null http://127.0.0.1:3000/ 2>/dev/null; then
       echo "Live: https://johnandnada.codexai.systems"
       exit 0
     fi
