@@ -1023,6 +1023,12 @@ html.js .verse__inner {
   display: inline-block;
   font-size: clamp(4.4rem, 1.6rem + 12vw, 10rem);
 }
+/* Each letter slides up inside its own mask; the line height is tight (0.9), so give the
+   masks extra room below (and take it back with a negative margin) or the J's tail is cut off. */
+.invite__char-mask {
+  padding-bottom: 0.25em;
+  margin-bottom: -0.25em;
+}
 .invite__surname {
   margin-top: 0.7rem;
   margin-right: -0.5em;

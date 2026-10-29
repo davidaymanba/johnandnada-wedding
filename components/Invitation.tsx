@@ -36,8 +36,9 @@ export function Invitation() {
         SplitText.create(q(".invite__name"), {
           type: "chars",
           mask: "chars",
+          charsClass: "invite__char", // masks get "invite__char-mask" (room for the J's tail, see CSS)
           onSplit: (self) => {
-            const t = gsap.from(self.chars, { yPercent: 115, duration: 1.4, stagger: 0.06, ease: "reveal" });
+            const t = gsap.from(self.chars, { yPercent: 140, duration: 1.4, stagger: 0.06, ease: "reveal" });
             names.add(t, 0);
             return t;
           },
