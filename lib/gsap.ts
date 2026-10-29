@@ -29,4 +29,16 @@ export const MQ = {
   mobile: "(max-width: 899px)",
 } as const;
 
+/**
+ * Scroll reveals start as soon as an element's top shows at the bottom of the screen and play
+ * faster than the intro, so words are never sitting invisible on screen waiting for more scroll.
+ */
+export const REVEAL_START = "top 94%";
+export const REVEAL_SPEED = 1.6;
+
+/** A play-once timeline that starts when `trigger` comes into view. */
+export function scrollReveal(trigger: gsap.DOMTarget, start = REVEAL_START) {
+  return gsap.timeline({ scrollTrigger: { trigger, start, once: true } }).timeScale(REVEAL_SPEED);
+}
+
 export { gsap, ScrollTrigger, SplitText, DrawSVGPlugin, CustomEase, Flip, useGSAP };

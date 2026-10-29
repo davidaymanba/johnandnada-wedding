@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { gsap, MQ, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, useGSAP, scrollReveal } from "@/lib/gsap";
 import { site } from "@/content/site";
 
 const TARGET = new Date(site.event.start).getTime();
@@ -104,7 +104,7 @@ export function Countdown() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
-        const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top 70%", once: true } });
+        const tl = scrollReveal(root.current);
         tl.from(q(".countdown__head > *"), { autoAlpha: 0, y: 14, stagger: 0.12, duration: 1.2 })
           .from(q(".unit"), { autoAlpha: 0, y: 30, stagger: 0.12, duration: 1.4 }, 0.2)
           .from(q(".unit__sep"), { scaleY: 0, stagger: 0.12, duration: 1.2, ease: "drift" }, 0.4)

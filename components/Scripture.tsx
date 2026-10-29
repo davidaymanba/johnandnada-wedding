@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, SplitText, useGSAP, scrollReveal } from "@/lib/gsap";
 import type { Verse } from "@/content/site";
 import { Ornament } from "./Ornament";
 
@@ -16,7 +16,7 @@ export function Scripture({ verse, className = "" }: Props) {
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
         const q = gsap.utils.selector(root);
-        const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top 78%", once: true } });
+        const tl = scrollReveal(root.current);
         tl.from(q(".ornament path"), { drawSVG: "50% 50%", duration: 1.6, stagger: 0.08, ease: "drift" });
         SplitText.create(q(".interlude__en")[0], {
           type: "lines",

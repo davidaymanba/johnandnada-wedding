@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, SplitText, useGSAP, scrollReveal, REVEAL_START, REVEAL_SPEED } from "@/lib/gsap";
 import { fullNames, site, verseAt } from "@/content/site";
 import { Scripture } from "./Scripture";
 import { HeroPhoto } from "./HeroPhoto";
@@ -15,11 +15,11 @@ export function Closing() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
-        const trigger = { trigger: q(".closing__sign")[0], start: "top 80%", once: true };
-        gsap.from(q(".closing .hero-photo"), { autoAlpha: 0, duration: 2, ease: "drift", scrollTrigger: trigger });
-        gsap.from(q(".closing .hero-photo__img"), { scale: 1.08, duration: 3, scrollTrigger: trigger });
+        const trigger = { trigger: q(".closing__sign")[0], start: REVEAL_START, once: true };
+        gsap.from(q(".closing .hero-photo"), { autoAlpha: 0, duration: 2, ease: "drift", scrollTrigger: trigger }).timeScale(REVEAL_SPEED);
+        gsap.from(q(".closing .hero-photo__img"), { scale: 1.08, duration: 3, scrollTrigger: trigger }).timeScale(REVEAL_SPEED);
 
-        const tl = gsap.timeline({ scrollTrigger: { trigger: q(".closing__words")[0], start: "top 88%", once: true } });
+        const tl = scrollReveal(q(".closing__words")[0]);
         SplitText.create(q(".closing__line")[0], {
           type: "lines,words",
           mask: "lines",

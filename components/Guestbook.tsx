@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type FormEvent } from "react";
-import { gsap, MQ, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, useGSAP, REVEAL_START, REVEAL_SPEED } from "@/lib/gsap";
 import { site } from "@/content/site";
 
 type Relation = "groom" | "bride" | "family" | null;
@@ -31,8 +31,8 @@ export function Guestbook() {
           y: 18,
           stagger: 0.08,
           duration: 1.2,
-          scrollTrigger: { trigger: root.current, start: "top 70%", once: true },
-        });
+          scrollTrigger: { trigger: root.current, start: REVEAL_START, once: true },
+        }).timeScale(REVEAL_SPEED);
       });
       return () => mm.revert();
     },

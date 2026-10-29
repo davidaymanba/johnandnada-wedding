@@ -2,7 +2,7 @@
 
 import { Frame } from "./Frame";
 import { useRef } from "react";
-import { gsap, MQ, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, ScrollTrigger, SplitText, useGSAP, scrollReveal, REVEAL_START, REVEAL_SPEED } from "@/lib/gsap";
 import { site, verseAt, type Photo } from "@/content/site";
 import { Scripture } from "./Scripture";
 
@@ -86,8 +86,8 @@ export function Story() {
               yPercent: 110,
               stagger: 0.06,
               duration: 1.4,
-              scrollTrigger: { trigger: q(".story__head")[0], start: "top 80%", once: true },
-            }),
+              scrollTrigger: { trigger: q(".story__head")[0], start: REVEAL_START, once: true },
+            }).timeScale(REVEAL_SPEED),
         });
 
         // The path draws itself with the scroll; its tip rides ~60% down the screen.
@@ -108,7 +108,7 @@ export function Story() {
         });
 
         q(".milestone").forEach((m) => {
-          const tl = gsap.timeline({ scrollTrigger: { trigger: m, start: "top 74%", once: true } });
+          const tl = scrollReveal(m);
           tl.from(m.querySelector(".milestone__num"), { autoAlpha: 0, x: -12, duration: 1 });
           const date = m.querySelector(".milestone__date");
           if (date) {
@@ -181,18 +181,18 @@ export function Story() {
         } else {
           q(".chapter__item").forEach((item) => {
             const reveal = item.querySelector(".frame__reveal");
-            const tl = gsap.timeline({ scrollTrigger: { trigger: item, start: "top 86%", once: true } });
+            const tl = scrollReveal(item);
             tl.from(reveal, { clipPath: "inset(100% 0% 0% 0%)", duration: 1.5, ease: "door" }).from(item.querySelector(".frame__reveal img"), { scale: 1.25, duration: 2 }, 0);
           });
         }
         if (!desktop) {
           q(".chapter__panel").forEach((panel) =>
-            gsap.from(panel.children, { autoAlpha: 0, y: 18, stagger: 0.1, duration: 1.2, scrollTrigger: { trigger: panel, start: "top 80%", once: true } }),
+            gsap.from(panel.children, { autoAlpha: 0, y: 18, stagger: 0.1, duration: 1.2, scrollTrigger: { trigger: panel, start: REVEAL_START, once: true } }).timeScale(REVEAL_SPEED),
           );
         }
 
         // Finale: the wedding-day photo opens like the door did.
-        const fin = gsap.timeline({ scrollTrigger: { trigger: q(".finale")[0], start: "top 65%", once: true } });
+        const fin = scrollReveal(q(".finale")[0]);
         fin
           .from(q(".finale .frame__reveal"), { clipPath: "inset(0% 50% 0% 50%)", duration: 1.8, ease: "door" })
           .from(q(".finale .frame__reveal img"), { scale: 1.2, duration: 2.4 }, 0)

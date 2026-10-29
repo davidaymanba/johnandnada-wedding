@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, MQ, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, useGSAP, scrollReveal } from "@/lib/gsap";
 import { site } from "@/content/site";
 import { googleCalendarUrl } from "@/lib/calendar";
 import { Magnetic } from "./Magnetic";
@@ -19,7 +19,7 @@ export function Details() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
-        const tl = gsap.timeline({ scrollTrigger: { trigger: q(".details__card")[0], start: "top 72%", once: true } });
+        const tl = scrollReveal(q(".details__card")[0]);
         tl.from(q(".details__frame path"), { drawSVG: "50% 50%", duration: 2, ease: "drift" })
           .from(q(".details__head > *"), { autoAlpha: 0, y: 14, stagger: 0.12, duration: 1.1 }, 0.2)
           .from(q(".details__day-num"), { yPercent: 105, duration: 1.5, stagger: 0.1, ease: "reveal" }, 0.45)

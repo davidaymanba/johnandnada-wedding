@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, MQ, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, MQ, SplitText, useGSAP, scrollReveal, REVEAL_START, REVEAL_SPEED } from "@/lib/gsap";
 import { site } from "@/content/site";
 import { monogram } from "@/content/monogram";
 import { ArchPhoto } from "./ArchPhoto";
@@ -16,7 +16,7 @@ export function Invitation() {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
       mm.add(MQ.motion, () => {
-        const tl = gsap.timeline({ scrollTrigger: { trigger: q(".invite__portraits")[0], start: "top 75%", once: true } });
+        const tl = scrollReveal(q(".invite__portraits")[0]);
         tl.from(q(".invite__eyebrow"), { autoAlpha: 0, y: 10, duration: 1 })
           .from(q(".arch__outline path"), { drawSVG: "50% 50%", duration: 1.8, stagger: 0.25, ease: "drift" }, 0)
           .from(q(".arch__reveal"), { clipPath: "inset(100% 0% 0% 0%)", duration: 1.7, stagger: 0.25, ease: "door" }, 0.15)
@@ -32,7 +32,7 @@ export function Invitation() {
           );
         });
 
-        const names = gsap.timeline({ scrollTrigger: { trigger: q(".invite__names")[0], start: "top 80%", once: true } });
+        const names = scrollReveal(q(".invite__names")[0]);
         SplitText.create(q(".invite__name"), {
           type: "chars",
           mask: "chars",
@@ -57,8 +57,8 @@ export function Invitation() {
               duration: 1.1,
               stagger: 0.06,
               ease: "drift",
-              scrollTrigger: { trigger: q(".invite__lines")[0], start: "top 85%", once: true },
-            }),
+              scrollTrigger: { trigger: q(".invite__lines")[0], start: REVEAL_START, once: true },
+            }).timeScale(REVEAL_SPEED),
         });
       });
       return () => mm.revert();

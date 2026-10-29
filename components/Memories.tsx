@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Flip, gsap, MQ, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { Flip, gsap, MQ, ScrollTrigger, useGSAP, REVEAL_START, REVEAL_SPEED } from "@/lib/gsap";
 import { lockScroll } from "@/lib/lenis";
 import { site } from "@/content/site";
 import { Frame } from "./Frame";
@@ -25,19 +25,19 @@ export function Memories() {
           y: 16,
           stagger: 0.12,
           duration: 1.2,
-          scrollTrigger: { trigger: root.current, start: "top 72%", once: true },
-        });
+          scrollTrigger: { trigger: root.current, start: REVEAL_START, once: true },
+        }).timeScale(REVEAL_SPEED);
         const tiles = q(".tile");
         gsap.set(tiles, { clipPath: "inset(100% 0% 0% 0%)" });
         gsap.set(q(".tile .frame__reveal img"), { scale: 1.2 });
         ScrollTrigger.batch(tiles, {
-          start: "top 88%",
+          start: REVEAL_START,
           once: true,
           onEnter: (batch) => {
-            gsap.to(batch, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.5, stagger: 0.12, ease: "door" });
+            gsap.to(batch, { clipPath: "inset(0% 0% 0% 0%)", duration: 1, stagger: 0.08, ease: "door" });
             gsap.to(
               batch.map((b) => b.querySelector(".frame__reveal img")),
-              { scale: 1, duration: 2, stagger: 0.12, ease: "reveal" },
+              { scale: 1, duration: 1.3, stagger: 0.08, ease: "reveal" },
             );
           },
         });
