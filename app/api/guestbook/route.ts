@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { addEntry, hashIp, isAdminKey, listEntries, recentCount } from "@/lib/guestbook";
+import { addEntry, hashIp, recentCount } from "@/lib/guestbook";
 
 export const dynamic = "force-dynamic";
 
@@ -19,20 +19,7 @@ const Body = z.object({
   website: z.string().optional(), // honeypot — humans never see it
 });
 
-// Blessings are private: only the couple (with GUESTBOOK_ADMIN_KEY) can read them.
-export async function GET(req: NextRequest) {
-  if (!isAdminKey(req.headers.get("x-admin-key") ?? req.nextUrl.searchParams.get("key"))) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-  try {
-    const before = req.nextUrl.searchParams.get("before") ?? undefined;
-    const data = await listEntries(before && !Number.isNaN(Date.parse(before)) ? before : undefined);
-    return NextResponse.json(data, { headers: { "Cache-Control": "no-store" } });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Couldn’t load the blessings right now." }, { status: 500 });
-  }
-}
+// Blessings are private: nothing here reads them back. The couple reads them on /blessings (password).
 
 export async function POST(req: NextRequest) {
   let json: unknown;

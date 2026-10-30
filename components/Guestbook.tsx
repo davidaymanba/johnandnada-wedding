@@ -10,7 +10,7 @@ const gb = site.guestbook;
 
 /**
  * Guests leave a blessing; it goes privately to the couple (nothing is shown publicly).
- * The couple reads them at /blessings?key=… (see README).
+ * The couple reads them at /blessings, behind a password (see README).
  */
 export function Guestbook() {
   const root = useRef<HTMLElement>(null);

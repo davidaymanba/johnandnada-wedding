@@ -1766,6 +1766,26 @@ html.js .verse__inner {
   letter-spacing: 0.08em;
   color: var(--fg-2);
 }
+.unlock {
+  display: grid;
+  gap: 1.2rem;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+.unlock__error {
+  min-height: 1.4em;
+  margin: 0;
+  font-style: italic;
+  color: var(--error);
+}
+.blessings__lock {
+  display: grid;
+  justify-items: center;
+  margin-top: 2.5rem;
+}
+.blessings__lock .blessing__delete {
+  margin-left: 0;
+}
 .blessing__delete {
   margin-left: auto;
   min-height: 40px;

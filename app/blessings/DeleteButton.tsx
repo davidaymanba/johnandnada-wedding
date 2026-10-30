@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { removeBlessing } from "./actions";
 
-export function DeleteButton({ adminKey, id, name }: { adminKey: string; id: string; name: string }) {
+export function DeleteButton({ id, name }: { id: string; name: string }) {
   const [pending, start] = useTransition();
   return (
     <button
@@ -12,7 +12,7 @@ export function DeleteButton({ adminKey, id, name }: { adminKey: string; id: str
       disabled={pending}
       onClick={() => {
         if (!window.confirm(`Delete the message from ${name}? This can’t be undone.`)) return;
-        start(() => removeBlessing(adminKey, id));
+        start(() => removeBlessing(id));
       }}
     >
       {pending ? "Deleting…" : "Delete"}

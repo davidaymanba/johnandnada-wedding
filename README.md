@@ -38,9 +38,9 @@ The whole page is one theme: **navy (default)** or **light**. Guests switch with
 ## Guestbook (Supabase)
 
 1. Create a Supabase project → SQL editor → run `supabase/migration.sql`.
-2. Copy `.env.example` to `.env.local` and fill in `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`.
+2. Copy `.env.example` to `.env.local` and fill in `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`, `GUESTBOOK_ADMIN_PASSWORD`.
 
-**Blessings are private.** Guests only see the form and a thank-you; nothing they write is shown on the site. John & Nada read every message at **`/blessings?key=YOUR_GUESTBOOK_ADMIN_KEY`** (that page and the read API return 404 without the key), or in the Supabase table editor.
+**Blessings are private.** Guests only see the form and a thank-you; nothing they write is shown on the site. John & Nada read (and can delete) every message at **`/blessings`**, which asks for the password in `GUESTBOOK_ADMIN_PASSWORD`. A correct password keeps that browser signed in for 30 days ("Lock this page" signs out); 5 wrong tries lock that visitor out for 15 minutes. Nothing else reads the messages back.
 3. Inserts go through `app/api/guestbook/route.ts`: Zod validation (name ≤ 40, message ≤ 500), HTML stripped, honeypot, rate limit 3 per 10 minutes per hashed IP. The service key never reaches the browser; RLS allows public reads of approved rows only.
 
 **Hide a message:** `update public.guestbook set approved = false where id = '…';`
@@ -53,7 +53,7 @@ The site runs at **https://johnandnada.codexai.systems** on the Hostinger VPS (`
 
 - `/docker/johnandnada/app/`: a clone of this repo (updated by `deploy/deploy.sh`)
 - `/docker/johnandnada/docker-compose.yml`: copy of `deploy/docker-compose.yml`
-- `/docker/johnandnada/.env`: `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY` (server only, never committed)
+- `/docker/johnandnada/.env`: `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY` (signs the sign-in cookie), `GUESTBOOK_ADMIN_PASSWORD` (server only, never committed)
 - Blessings: `/data/blessings.json` in the `johnandnada_blessings` Docker volume (survives rebuilds)
 
 **Every push to `main` deploys automatically** (within about a minute, plus ~2 minutes to build). A cron job on the VPS runs `deploy/autodeploy.sh` every minute; when GitHub's `main` has new commits it runs `deploy/deploy.sh`, which pulls `main` into `app/`, rebuilds the image and checks the site answers. No keys or GitHub secrets are involved: the server only reads the public repo.
@@ -67,7 +67,7 @@ DNS: `johnandnada.codexai.systems` needs an **A record → 31.97.107.121** and n
 ## Deploy to Vercel (alternative)
 
 1. Push this folder to GitHub (or run `npx vercel` inside it).
-2. In Vercel → Project → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`, and `NEXT_PUBLIC_SITE_URL` (the final URL — used for the WhatsApp preview, share link and calendar file).
+2. In Vercel → Project → Settings → Environment Variables, add `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GUESTBOOK_SALT`, `GUESTBOOK_ADMIN_KEY`, `GUESTBOOK_ADMIN_PASSWORD`, and `NEXT_PUBLIC_SITE_URL` (the final URL — used for the WhatsApp preview, share link and calendar file).
 3. Deploy. The framework preset is detected automatically.
 
 ## QA scripts

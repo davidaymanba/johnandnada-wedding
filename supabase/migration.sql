@@ -18,7 +18,7 @@ alter table public.guestbook enable row level security;
 
 -- Blessings are private to the couple. RLS is on with NO public policies, so the public (anon) key
 -- can neither read nor write. The Next.js route handler uses the service-role key server-side;
--- the couple reads messages at /blessings?key=GUESTBOOK_ADMIN_KEY (or in the Supabase table editor).
+-- the couple reads messages at /blessings, behind GUESTBOOK_ADMIN_PASSWORD (or in the Supabase table editor).
 drop policy if exists "public read approved" on public.guestbook;
 
 -- To hide a message:  update public.guestbook set approved = false where id = '...';
