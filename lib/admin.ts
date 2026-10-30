@@ -14,7 +14,9 @@ const same = (a: string, b: string) => {
   return x.length === y.length && timingSafeEqual(x, y);
 };
 
-const sign = (exp: string) => createHmac("sha256", process.env.GUESTBOOK_ADMIN_KEY ?? "").update(`blessings:${exp}`).digest("base64url");
+// The password is part of the signature, so changing it signs every browser out.
+const sign = (exp: string) =>
+  createHmac("sha256", `${process.env.GUESTBOOK_ADMIN_KEY ?? ""}:${process.env.GUESTBOOK_ADMIN_PASSWORD ?? ""}`).update(`blessings:${exp}`).digest("base64url");
 
 export function passwordMatches(input: string) {
   const pw = process.env.GUESTBOOK_ADMIN_PASSWORD;
